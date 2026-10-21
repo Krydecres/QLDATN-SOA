@@ -104,7 +104,8 @@ public class DangKyService {
     }
 
     private void validate(DangKyRequest req, Long currentId) {
-        if (req.maSV() == null || req.maSV().isBlank() || req.maDT() == null || req.maDT().isBlank()) {
+        // Sửa dòng này: req.maDT() kiểu Long nên chỉ check == null
+        if (req.maSV() == null || req.maSV().isBlank() || req.maDT() == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Mã SV và mã đề tài không được để trống");
         }
         if (sinhVienClient.findByMa(req.maSV()) == null) {
@@ -147,7 +148,7 @@ public class DangKyService {
                 dk.getXepLoai());
     }
 
-    public boolean existsByMaDT(String maDT) {
+    public boolean existsByMaDT(Long maDT) {
         return repo.existsByMaDT(maDT);
     }
 }

@@ -8,7 +8,7 @@ public record DangKyView(
         String maSV,
         String hoTen,
         String lop,
-        String maDT,
+        Long maDT,
         String tenDT,
         String gvhd,
         LocalDate ngayDangKy,

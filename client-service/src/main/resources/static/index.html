@@ -183,8 +183,9 @@
 <div id="toast"></div>
 
 <script>
-const GATEWAY_URL = window.location.origin.includes(':8800') 
-  ? window.location.origin.replace(':8800', ':8080') 
+// Tự động nhận diện cổng 8800 để đổi sang 8080 trên cả Local và Cloud Workstation
+const GATEWAY_URL = window.location.origin.includes('8800')
+  ? window.location.origin.replace('8800', '8080')
   : 'http://localhost:8080';
 
 const API = {

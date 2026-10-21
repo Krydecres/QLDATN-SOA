@@ -20,7 +20,7 @@ public class DeTaiClient {
     }
 
     /** Tra ve null neu de tai khong ton tai; nem 503 neu service khong chay. */
-    public DeTaiDTO findByMa(String maDT) {
+    public DeTaiDTO findByMa(Long maDT) {
         try {
             return rest.get().uri("/{ma}", maDT).retrieve().body(DeTaiDTO.class);
         } catch (HttpClientErrorException.NotFound e) {

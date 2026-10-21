@@ -65,14 +65,14 @@ public class DangKyController {
     // Endpoint NỘI BỘ dành riêng cho detai-service gọi kiểm tra trước khi xóa đề tài
     @GetMapping("/internal/check-detai/{maDT}")
     public boolean checkDeTaiDaDangKy(
-            @PathVariable String maDT,
+            @PathVariable Long maDT,
             @RequestHeader(value = "X-Internal-Secret", required = false) String secret) {
-
+    
         String INTERNAL_SECRET = "QLDATN_INTER_SERVICE_SECRET_KEY_2026";
         if (secret == null || !secret.equals(INTERNAL_SECRET)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Từ chối truy cập: Thiếu hoặc sai Secret Key nội bộ!");
         }
-
+    
         return service.existsByMaDT(maDT);
     }
 }

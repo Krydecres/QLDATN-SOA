@@ -19,8 +19,8 @@ public class DangKy {
     @Column(name = "ma_sv", nullable = false, unique = true, length = 10)
     private String maSV;
 
-    @Column(name = "ma_dt", nullable = false, unique = true, length = 10)
-    private String maDT;
+    @Column(name = "ma_dt", nullable = false, unique = true)
+    private Long maDT;
 
     @Column(name = "ngay_dang_ky")
     private LocalDate ngayDangKy;
@@ -44,8 +44,8 @@ public class DangKy {
     public void setId(Long id) { this.id = id; }
     public String getMaSV() { return maSV; }
     public void setMaSV(String maSV) { this.maSV = maSV; }
-    public String getMaDT() { return maDT; }
-    public void setMaDT(String maDT) { this.maDT = maDT; }
+    public Long getMaDT() { return maDT; }
+    public void setMaDT(Long maDT) { this.maDT = maDT; }
     public LocalDate getNgayDangKy() { return ngayDangKy; }
     public void setNgayDangKy(LocalDate ngayDangKy) { this.ngayDangKy = ngayDangKy; }
     public Double getDiemGVHD() { return diemGVHD; }
