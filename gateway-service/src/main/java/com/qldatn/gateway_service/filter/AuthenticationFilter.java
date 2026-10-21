@@ -5,6 +5,7 @@ import io.jsonwebtoken.Claims;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
@@ -18,8 +19,8 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
 
     private final JwtUtil jwtUtil;
 
-    // Danh sách các public endpoint không yêu cầu JWT
-    private static final List<String> PUBLIC_ENDPOINTS = List.of(
+    // Các đường dẫn public hoàn toàn (mọi HTTP Method)
+    private static final List<String> PUBLIC_PATH_PREFIXES = List.of(
             "/api/auth/login",
             "/v3/api-docs",
             "/swagger-ui"
@@ -31,7 +32,6 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
     }
 
     public static class Config {
-        // Cấu hình mở rộng nếu cần
     }
 
     @Override
@@ -39,9 +39,10 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
         return (exchange, chain) -> {
             ServerHttpRequest request = exchange.getRequest();
             String path = request.getURI().getPath();
+            HttpMethod method = request.getMethod();
 
-            // Nếu là endpoint công khai thì bỏ qua xác thực
-            if (isPublicEndpoint(path)) {
+            // Bỏ qua xác thực cho các endpoint public
+            if (isPublicEndpoint(path, method)) {
                 return chain.filter(exchange);
             }
 
@@ -77,8 +78,18 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
         };
     }
 
-    private boolean isPublicEndpoint(String path) {
-        return PUBLIC_ENDPOINTS.stream().anyMatch(path::contains);
+    private boolean isPublicEndpoint(String path, HttpMethod method) {
+        // 1. Cho phép các đường dẫn auth/login, swagger docs
+        if (PUBLIC_PATH_PREFIXES.stream().anyMatch(path::contains)) {
+            return true;
+        }
+
+        // 2. Cho phép xem danh sách (GET) đề tài và đăng ký công khai
+        if (HttpMethod.GET.equals(method) && (path.startsWith("/api/detai") || path.startsWith("/api/dangky"))) {
+            return true;
+        }
+
+        return false;
     }
 
     private Mono<Void> onError(ServerWebExchange exchange, String err, HttpStatus httpStatus) {
