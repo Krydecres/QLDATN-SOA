@@ -111,7 +111,7 @@ Khi chạy ứng dụng, tài liệu chuẩn hóa API và schema DTO/JSON sẽ t
 http://localhost:8081/swagger-ui.html (Sinh viên)
 http://localhost:8082/swagger-ui.html (Đề tài)
 http://localhost:8083/swagger-ui.html (Đăng ký)
-
+http://localhost:8080/swagger-ui.html (gateway)
 Bất kỳ client nào (Node.js, C#, Python, Flutter) chỉ cần xem OpenAPI Spec (JSON/YAML) này là có thể gọi API chính xác mà không cần quan tâm backend viết bằng Java Spring Boot.
 
 http://localhost:8800/index.html
