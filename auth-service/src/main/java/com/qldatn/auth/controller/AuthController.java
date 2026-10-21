@@ -43,10 +43,7 @@ public class AuthController {
     @GetMapping("/sinhvien")
     @SecurityRequirement(name = "BearerAuth")
     public List<SinhVienResponse> getAllSinhVien(
-            @RequestHeader(value = "Authorization", required = false) String authHeader) {
-
-        Claims claims = JwtUtil.parseToken(authHeader);
-        String role = claims.get("role", String.class);
+            @RequestHeader(value = "X-User-Role", required = false) String role) {
 
         if ("SINHVIEN".equals(role)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Sinh viên không có quyền xem danh sách tất cả sinh viên!");
@@ -62,11 +59,8 @@ public class AuthController {
     @SecurityRequirement(name = "BearerAuth")
     public SinhVienResponse getSinhVienByMa(
             @PathVariable String maSV,
-            @RequestHeader(value = "Authorization", required = false) String authHeader) {
-
-        Claims claims = JwtUtil.parseToken(authHeader);
-        String role = claims.get("role", String.class);
-        String tokenMaSV = claims.get("maSV", String.class);
+            @RequestHeader(value = "X-User-Role", required = false) String role,
+            @RequestHeader(value = "X-User-MaSV", required = false) String tokenMaSV) {
 
         if ("SINHVIEN".equals(role) && !maSV.equalsIgnoreCase(tokenMaSV)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Bạn chỉ được phép xem thông tin của chính mình!");

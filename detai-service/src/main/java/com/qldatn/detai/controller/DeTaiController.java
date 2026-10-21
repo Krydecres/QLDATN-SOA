@@ -3,8 +3,6 @@ package com.qldatn.detai.controller;
 import com.qldatn.detai.dto.DeTaiRequest;
 import com.qldatn.detai.entity.DeTai;
 import com.qldatn.detai.repository.DeTaiRepository;
-import com.qldatn.detai.util.JwtUtil;
-import io.jsonwebtoken.Claims;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -38,9 +36,9 @@ public class DeTaiController {
     @SecurityRequirement(name = "BearerAuth")
     public DeTai create(
             @RequestBody DeTaiRequest req,
-            @RequestHeader(value = "Authorization", required = false) String authHeader) {
+            @RequestHeader(value = "X-User-Role", required = false) String role) {
 
-        checkPermission(authHeader, "Chỉ Giảng viên hoặc Admin mới có quyền thêm đề tài!");
+        checkPermission(role, "Chỉ Giảng viên hoặc Admin mới có quyền thêm đề tài!");
 
         if (req.tenDT() == null || req.tenDT().isBlank()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Tên đề tài không được để trống");
@@ -59,9 +57,9 @@ public class DeTaiController {
     public DeTai update(
             @PathVariable Long id,
             @RequestBody DeTaiRequest req,
-            @RequestHeader(value = "Authorization", required = false) String authHeader) {
+            @RequestHeader(value = "X-User-Role", required = false) String role) {
 
-        checkPermission(authHeader, "Chỉ Giảng viên hoặc Admin mới có quyền sửa đề tài!");
+        checkPermission(role, "Chỉ Giảng viên hoặc Admin mới có quyền sửa đề tài!");
 
         DeTai old = getById(id);
         if (req.tenDT() == null || req.tenDT().isBlank()) {
@@ -79,17 +77,14 @@ public class DeTaiController {
     @SecurityRequirement(name = "BearerAuth")
     public void delete(
             @PathVariable Long id,
-            @RequestHeader(value = "Authorization", required = false) String authHeader) {
+            @RequestHeader(value = "X-User-Role", required = false) String role) {
 
-        checkPermission(authHeader, "Chỉ Giảng viên hoặc Admin mới có quyền xóa đề tài!");
+        checkPermission(role, "Chỉ Giảng viên hoặc Admin mới có quyền xóa đề tài!");
 
         repo.delete(getById(id));
     }
 
-    private void checkPermission(String authHeader, String errorMessage) {
-        Claims claims = JwtUtil.parseToken(authHeader);
-        String role = claims.get("role", String.class);
-
+    private void checkPermission(String role, String errorMessage) {
         if ("SINHVIEN".equals(role)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, errorMessage);
         }
