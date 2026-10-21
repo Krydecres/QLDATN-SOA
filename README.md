@@ -1,126 +1,88 @@
-# Demo SOA – Quản lý Đồ án Tốt nghiệp (Spring Boot)
+# Demo SOA – Quản lý Đồ án Tốt nghiệp
 
-Hệ thống gồm **3 dịch vụ độc lập**. Mỗi dịch vụ là một project Spring Boot riêng, chạy ở port riêng và chỉ quản lý một bảng.
-Các dịch vụ trao đổi dữ liệu với nhau qua **HTTP/REST (JSON)**.
+## Chạy dự án
 
-```
-                 ┌──────────────────────────┐
-                 │  Client (client/index.html)│
-                 └─────┬──────────┬─────────┬┘
-                  REST │     REST │    REST │
-        ┌──────────────▼┐  ┌──────▼───────┐ ┌▼──────────────────┐
-        │sinhvien-service│  │detai-service │ │  dangky-service   │
-        │    :8081       │  │   :8082      │ │     :8083         │
-        │ bảng SINHVIEN  │  │ bảng DETAI   │ │  bảng DANGKY      │
-        └───────▲────────┘  └──────▲───────┘ └──┬────────────┬───┘
-                │   GET /api/sinhvien/{ma}      │            │
-                └───────────────────────────────┘            │
-                               GET /api/detai/{ma}           │
-                               ◄─────────────────────────────┘
-                      (MySQL: database qldatn)
-```
+**Windows: nhấp đúp `run-all.bat`. Chỉ chạy một script, không chạy đồng thời với `run.sh`.**
 
-| Dịch vụ | Port | Bảng | Chức năng |
-|---|---|---|---|
-| sinhvien-service | 8081 | SINHVIEN | CRUD sinh viên |
-| detai-service | 8082 | DETAI | CRUD đề tài |
-| dangky-service | 8083 | DANGKY | Đăng ký đề tài, chấm điểm. **Gọi 2 service kia** để kiểm tra SV/đề tài có tồn tại và lấy họ tên, tên đề tài |
+Script tự chạy bốn service, đợi chúng sẵn sàng rồi mở http://localhost:8080/ trên trình duyệt. Bạn không cần mở terminal cho từng service. Giữ cửa sổ launcher khi demo; nhấn Enter ở đó để dừng cả bốn service. Log nằm trong `.demo-logs/`.
 
-### Đặc trưng SOA thể hiện trong demo
-- **Dịch vụ độc lập**: 3 project tách biệt, tắt 1 service thì các service khác vẫn chạy (thử tắt `detai-service` rồi xem danh sách đăng ký: cột tên đề tài hiện "(không lấy được)", không bị lỗi cả hệ thống).
-- **Giao tiếp qua giao thức chuẩn**: HTTP + JSON. Bảng DANGKY không JOIN sang bảng khác mà gọi REST (`client/SinhVienClient.java`, `client/DeTaiClient.java`).
-- **Tái sử dụng**: `sinhvien-service` và `detai-service` vừa được client dùng trực tiếp, vừa được `dangky-service` tái sử dụng.
+`run.sh` dành cho Bash trên Linux/macOS/WSL, với Java/MySQL cài và truy cập được trong môi trường đó. Script cũng chạy đủ bốn service và mở cùng địa chỉ Gateway. Git Bash trên Windows sẽ hướng dẫn dùng `run-all.bat`.
 
-## Cấu trúc thư mục
-```
-QLDATN-SOA/
-├── database/qldatn.sql      # Script tạo CSDL + dữ liệu mẫu
-├── sinhvien-service/        # entity / repository / controller
-├── detai-service/           # entity / repository / controller
-├── dangky-service/          # entity / repository / controller / service / client / dto
-├── client/index.html        # Giao diện web gọi API
-└── run-all.bat              # Chạy cả 3 service + mở client
-```
+Yêu cầu: JDK 21, MySQL đang chạy tại localhost:3306 và dữ liệu đã nạp từ `database/qldatn.sql`. Maven Wrapper đã có trong từng service, không cần cài Maven riêng. Lần đầu có thể lâu vì cần tải dependency. Launcher báo lỗi nếu cổng service đã bị chiếm hoặc quá thời gian khởi động.
 
-## Cách chạy
-Yêu cầu: **Java 21**, **MySQL** (user `root`, mật khẩu `123456`. Nếu khác thì sửa trong `src/main/resources/application.properties` của từng service).
+## Kiến trúc và database hiện tại
 
-1. Tạo CSDL (chỉ cần làm 1 lần):
-   ```
-   mysql -u root -p < database/qldatn.sql
-   ```
-   (Hoặc mở file trong MySQL Workbench rồi bấm Execute.)
-2. Nhấp đúp **`run-all.bat`**: mở 3 cửa sổ cho 3 service, sau khoảng 20 giây tự mở giao diện client.
-   Có thể chạy thủ công từng service: `cd sinhvien-service` rồi `mvnw spring-boot:run`, hoặc mở bằng IntelliJ và chạy class `*Application`.
-3. Dùng giao diện `client/index.html`. Góc trên bên phải có đèn xanh/đỏ báo trạng thái từng service.
+Giao diện được phục vụ từ `gateway-service/src/main/resources/static/index.html`. Các request đi qua Gateway tại cổng 8080, sau đó tới service nghiệp vụ. Không cần một client-service riêng.
 
-## Danh sách API
+| Service | Cổng | Database | Bảng/chức năng |
+|---|---:|---|---|
+| gateway-service | 8080 | Không có database nghiệp vụ | Giao diện, định tuyến, JWT và phân quyền |
+| auth-service | 8081 | qldatn_auth | TAIKHOAN, đăng nhập và tra cứu sinh viên |
+| detai-service | 8082 | qldatn_detai | DETAI, quản lý đề tài |
+| dangky-service | 8083 | qldatn_dangky | DANGKY, đăng ký và chấm điểm |
 
-### sinhvien-service – `http://localhost:8081/api/sinhvien`
-| Method | URL | Mô tả |
+Database chung `qldatn` cũ không còn được sử dụng. Mỗi service thao tác database riêng; Đăng ký gọi REST sang Auth/Đề tài để kiểm tra mã và bổ sung tên vào response. Không có khóa ngoại chéo database.
+
+Ba datasource nằm trong `src/main/resources/application.properties` của từng service dữ liệu. Cấu hình local hiện dùng MySQL `root` / `123456`. Nếu tài khoản MySQL khác, sửa cấu hình tương ứng.
+
+## Nạp dữ liệu
+
+Database đã được tạo/nạp trên máy hiện tại. Trên máy khác, mở `database/qldatn.sql` bằng MySQL Workbench và Execute, hoặc dùng lệnh SOURCE trong MySQL client. Script tạo ba database mới, không xóa và không ghi đè các bản ghi đã có cùng khóa.
+
+SQL hiện có 5 tài khoản, 3 đề tài và 2 đăng ký. ID đề tài là số BIGINT, ví dụ `3`, không phải chuỗi `DT03`.
+
+| Tài khoản | Quyền | Mật khẩu mẫu |
 |---|---|---|
-| GET | `/api/sinhvien` | Lấy tất cả |
-| GET | `/api/sinhvien/{maSV}` | Lấy 1 sinh viên |
-| POST | `/api/sinhvien` | Thêm `{"maSV":"SV005","hoTen":"...","lop":"CNTT01","email":"..."}` |
-| PUT | `/api/sinhvien/{maSV}` | Sửa |
-| DELETE | `/api/sinhvien/{maSV}` | Xóa |
+| admin | ADMIN | 123456 |
+| gv001 | GIANGVIEN | 123456 |
+| SV001, SV002, SV003 | SINHVIEN | 123456 |
 
-### detai-service – `http://localhost:8082/api/detai`
-Tương tự: GET, GET `/{maDT}`, POST `{"maDT":"DT05","tenDT":"...","gvhd":"...","moTa":"..."}`, PUT `/{maDT}`, DELETE `/{maDT}`.
+SV001 đã có đề tài 1 và điểm 8.55 (Giỏi). SV002 đã có đề tài 2, chưa chấm điểm. SV003 và đề tài 3 còn trống trong dữ liệu mẫu để demo đăng ký.
 
-### dangky-service – `http://localhost:8083/api/dangky`
-| Method | URL | Mô tả |
+## RabbitMQ
+
+Để demo gửi/nhận thông điệp, cần RabbitMQ tại localhost:5672. Nếu đã cài Docker Desktop, có thể chạy:
+
+```text
+docker run -d --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:4-management
+```
+
+Nếu container đã tồn tại và đang dừng, dùng `docker start rabbitmq`. Khi broker chưa chạy, launcher thông báo và tắt consumer RabbitMQ cho lần chạy đó; phần API/database vẫn hoạt động. Khi tạo đăng ký, producer vẫn thử gửi và có thể ghi log lỗi kết nối. Đây không phải chế độ để chứng minh messaging thành công.
+
+## API qua Gateway
+
+Giao diện: http://localhost:8080/
+
+Swagger UI: http://localhost:8080/swagger-ui.html
+
+| Method | Đường dẫn | Công dụng |
 |---|---|---|
-| GET | `/api/dangky` | Danh sách đăng ký (đã ghép họ tên SV + tên đề tài từ 2 service kia) |
-| GET | `/api/dangky/{id}` | Xem 1 đăng ký |
-| POST | `/api/dangky` | Đăng ký `{"maSV":"SV003","maDT":"DT03"}` |
-| PUT | `/api/dangky/{id}` | Đổi SV/đề tài |
-| PUT | `/api/dangky/{id}/diem` | **Chấm điểm** `{"diemGVHD":8,"diemPhanBien":7.5,"diemHoiDong":9}` |
-| DELETE | `/api/dangky/{id}` | Hủy đăng ký |
+| POST | /api/auth/login | Đăng nhập, nhận JWT |
+| GET | /api/auth/sinhvien | Danh sách sinh viên, dành cho Admin/Giảng viên |
+| GET | /api/auth/sinhvien/{maSV} | Tra cứu một sinh viên |
+| GET | /api/detai | Danh sách đề tài |
+| GET | /api/detai/{id} | Chi tiết đề tài |
+| POST/PUT/DELETE | /api/detai, /api/detai/{id} | Quản lý đề tài, dành cho Admin/Giảng viên |
+| GET | /api/dangky | Danh sách đăng ký có thông tin tổng hợp |
+| POST | /api/dangky | Tạo đăng ký |
+| PUT | /api/dangky/{id} | Đổi thông tin đăng ký chưa chấm điểm |
+| PUT | /api/dangky/{id}/diem | Chấm điểm, dành cho Admin/Giảng viên |
+| DELETE | /api/dangky/{id} | Hủy đăng ký chưa chấm điểm, dành cho Admin/Giảng viên |
 
-**Quy tắc nghiệp vụ**
-- Mỗi sinh viên chỉ đăng ký 1 đề tài, mỗi đề tài chỉ 1 sinh viên.
-- Khi đăng ký, `dangky-service` gọi `sinhvien-service` và `detai-service` để kiểm tra mã có tồn tại.
-- **Tính điểm**: `Tổng kết = GVHD × 30% + Phản biện × 30% + Hội đồng × 40%`, làm tròn 2 chữ số.
-- **Xếp loại**: ≥ 9 Xuất sắc · ≥ 8 Giỏi · ≥ 6.5 Khá · ≥ 5 Trung bình · < 5 Không đạt.
+Body tạo đăng ký:
 
-### Test nhanh bằng curl / Postman
-```
-curl http://localhost:8083/api/dangky
-curl -X POST http://localhost:8083/api/dangky -H "Content-Type: application/json" -d "{\"maSV\":\"SV003\",\"maDT\":\"DT03\"}"
-curl -X PUT http://localhost:8083/api/dangky/2/diem -H "Content-Type: application/json" -d "{\"diemGVHD\":8,\"diemPhanBien\":7.5,\"diemHoiDong\":9}"
+```json
+{"maSV":"SV003","maDT":3}
 ```
 
+Body chấm điểm:
 
+```json
+{"diemGVHD":8,"diemPhanBien":7.5,"diemHoiDong":9}
+```
 
-2. Interoperability (Khả năng cộng tác)
-Hiện trạng trong repo:
-Repo đã đạt tốt phần này nhờ dùng chuẩn REST API (HTTP + JSON). Các dịch vụ trao đổi bằng JSON độc lập với nền tảng/ngôn ngữ.   
-Cách tối ưu thêm (Chuẩn hóa API Contract bằng OpenAPI/Swagger): Để nâng cao khả năng tích hợp với hệ thống bên thứ ba (ví dụ ứng dụng di động, hệ thống cũ...), bạn nên chuẩn hóa tài liệu API công khai bằng Springdoc OpenAPI (Swagger).
+Điểm tổng kết = GVHD × 30% + phản biện × 30% + hội đồng × 40%, làm tròn hai chữ số. Với ví dụ trên, kết quả là 8.25, xếp loại Giỏi. Mỗi sinh viên/đề tài chỉ có một đăng ký. Đăng ký đã chấm điểm không được đổi hoặc hủy.
 
-Thêm dependency Swagger vào pom.xml của cả 3 service:
+## Tài liệu chi tiết
 
-<dependency>
-    <groupId>org.springdoc</groupId>
-    <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-    <version>2.5.0</version>
-</dependency>
-Cấu hình Swagger UI:
-Khi chạy ứng dụng, tài liệu chuẩn hóa API và schema DTO/JSON sẽ tự động tạo tại:
-
-http://localhost:8081/swagger-ui.html (tài khoản)
-http://localhost:8082/swagger-ui.html (Đề tài)
-http://localhost:8083/swagger-ui.html (Đăng ký)
-http://localhost:8080/swagger-ui.html (gateway)
-Bất kỳ client nào (Node.js, C#, Python, Flutter) chỉ cần xem OpenAPI Spec (JSON/YAML) này là có thể gọi API chính xác mà không cần quan tâm backend viết bằng Java Spring Boot.
-
-http://localhost:8800/index.html
-
-http://localhost:8080/ (gateway). nhớ mở port public 8080 (update public ports)
-
-# thêm RabbitMQ 
-docker run -d --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3-management
-
-# thêm ratelimmit
-test thử:
-for i in {1..15}; do curl -i http://localhost:8080/api/detai; echo ""; done
+Xem `docs/BAO_CAO_DATABASE_VA_HUONG_DAN_DEMO.md` để đọc báo cáo sửa database, giải thích code theo slide và kịch bản trình diễn.

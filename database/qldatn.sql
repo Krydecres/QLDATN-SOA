@@ -1,5 +1,10 @@
--- Active: 1791519077776@@127.0.0.1@3306@qldatn_detai
--- Database cho sinhvien-service
+-- Du lieu demo cho 3 service. Chay bang MySQL 8 voi ma hoa UTF-8.
+-- Moi service so huu database rieng, khong JOIN/FOREIGN KEY cheo service.
+-- Co the chay lai: khong xoa bang, khong ghi de cac ban ghi da ton tai.
+SET NAMES utf8mb4;
+SET SESSION sql_mode = 'STRICT_ALL_TABLES,NO_ENGINE_SUBSTITUTION';
+
+-- Database cho auth-service
 CREATE DATABASE IF NOT EXISTS qldatn_auth CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE qldatn_auth;
 
@@ -26,18 +31,18 @@ INSERT IGNORE INTO TAIKHOAN (username, password, ho_ten, lop, email, role, ma_sv
 CREATE DATABASE IF NOT EXISTS qldatn_detai CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE qldatn_detai;
 
--- Tạo lại bảng DETAI với id tự tăng
-CREATE TABLE DETAI (
+-- Ma de tai la id BIGINT tu tang, dung voi Entity DeTai.
+CREATE TABLE IF NOT EXISTS DETAI (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     ten_dt VARCHAR(200) NOT NULL,
     gvhd VARCHAR(100),
     mo_ta VARCHAR(500)
 );
 
-INSERT INTO DETAI (id, ten_dt, gvhd, mo_ta) VALUES
+INSERT IGNORE INTO DETAI (id, ten_dt, gvhd, mo_ta) VALUES
 (1,'Xây dựng hệ thống quản lý thư viện theo SOA', 'TS. Nguyễn Văn Hùng', 'Spring Boot, REST API'),
-('Ứng dụng web bán hàng trực tuyến', 'ThS. Trần Thu Hà', 'Microservices, MySQL'),
-('Chatbot hỗ trợ tuyển sinh', 'TS. Lê Quang Minh', 'NLP, Python');
+(2,'Ứng dụng web bán hàng trực tuyến', 'ThS. Trần Thu Hà', 'Microservices, MySQL'),
+(3,'Chatbot hỗ trợ tuyển sinh', 'TS. Lê Quang Minh', 'NLP, Python');
 
 
 -- Database cho dangky-service
@@ -46,7 +51,7 @@ USE qldatn_dangky;
 CREATE TABLE IF NOT EXISTS DANGKY (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     ma_sv VARCHAR(10) NOT NULL UNIQUE,
-    ma_dt VARCHAR(10) NOT NULL UNIQUE,
+    ma_dt BIGINT NOT NULL UNIQUE,
     ngay_dang_ky DATE,
     diem_gvhd DOUBLE,
     diem_phan_bien DOUBLE,
@@ -55,11 +60,12 @@ CREATE TABLE IF NOT EXISTS DANGKY (
     xep_loai VARCHAR(20)
 );
 
+-- Dong bo bang da tao bang phien ban SQL cu (ma_dt la VARCHAR).
+-- Khong chuyen cac ma dang DT01/DT02: MySQL se bao loi de tranh sai du lieu.
+ALTER TABLE DANGKY MODIFY COLUMN ma_dt BIGINT NOT NULL;
 
 
 
-use qldatn_dangky;
 INSERT IGNORE INTO DANGKY (id, ma_sv, ma_dt, ngay_dang_ky, diem_gvhd, diem_phan_bien, diem_hoi_dong, diem_tong_ket, xep_loai) VALUES
-(1, 'SV001', '1', '2026-09-15', 8.5, 8.0, 9.0, 8.55, 'Giỏi'),
-(2, 'SV002', '2', '2026-09-16', NULL, NULL, NULL, NULL, NULL);
-select * from DANGKY
+(1, 'SV001', 1, '2026-09-15', 8.5, 8.0, 9.0, 8.55, 'Giỏi'),
+(2, 'SV002', 2, '2026-09-16', NULL, NULL, NULL, NULL, NULL);
