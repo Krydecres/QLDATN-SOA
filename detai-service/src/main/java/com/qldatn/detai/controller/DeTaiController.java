@@ -72,7 +72,7 @@ public class DeTaiController {
 
         // KIỂM TRA NGHIỆP VỤ NỘI BỘ VỚI DANGKY-SERVICE:
         // Đề tài đã có sinh viên đăng ký thì KHÔNG ĐƯỢC XÓA!
-        if (dangKyClient.isDeTaiDaDuocDangKy(dt.getId().toString())) {
+        if (dangKyClient.isDeTaiDaDuocDangKy(dt.getId())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, 
                 "Không thể xóa đề tài này vì đã có sinh viên đăng ký!");
         }

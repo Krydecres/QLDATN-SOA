@@ -14,7 +14,7 @@ public class DangKyClient {
         this.rest = RestClient.create(baseUrl);
     }
 
-    public boolean isDeTaiDaDuocDangKy(String maDT) {
+    public boolean isDeTaiDaDuocDangKy(Long maDT) {
         try {
             Boolean result = rest.get()
                     .uri("/{maDT}", maDT)
