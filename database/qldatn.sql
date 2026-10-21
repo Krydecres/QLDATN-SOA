@@ -25,12 +25,19 @@ INSERT IGNORE INTO TAIKHOAN (username, password, ho_ten, lop, email, role, ma_sv
 -- Database cho detai-service
 CREATE DATABASE IF NOT EXISTS qldatn_detai CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE qldatn_detai;
-CREATE TABLE IF NOT EXISTS DETAI (
-    ma_dt VARCHAR(10) PRIMARY KEY,
+
+-- Tạo lại bảng DETAI với id tự tăng
+CREATE TABLE DETAI (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
     ten_dt VARCHAR(200) NOT NULL,
     gvhd VARCHAR(100),
     mo_ta VARCHAR(500)
 );
+
+INSERT INTO DETAI (ten_dt, gvhd, mo_ta) VALUES
+('Xây dựng hệ thống quản lý thư viện theo SOA', 'TS. Nguyễn Văn Hùng', 'Spring Boot, REST API'),
+('Ứng dụng web bán hàng trực tuyến', 'ThS. Trần Thu Hà', 'Microservices, MySQL'),
+('Chatbot hỗ trợ tuyển sinh', 'TS. Lê Quang Minh', 'NLP, Python');
 
 -- Database cho dangky-service
 CREATE DATABASE IF NOT EXISTS qldatn_dangky CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -48,13 +55,7 @@ CREATE TABLE IF NOT EXISTS DANGKY (
 );
 
 
-use qldatn_detai;
-INSERT IGNORE INTO DETAI VALUES
-('DT01', 'Xây dựng hệ thống quản lý thư viện theo SOA', 'TS. Nguyễn Văn Hùng', 'Spring Boot, REST API'),
-('DT02', 'Ứng dụng web bán hàng trực tuyến',            'ThS. Trần Thu Hà',    'Microservices, MySQL'),
-('DT03', 'Chatbot hỗ trợ tuyển sinh',                    'TS. Lê Quang Minh',   'NLP, Python'),
-('DT04', 'Hệ thống điểm danh bằng nhận diện khuôn mặt',  'ThS. Đỗ Thị Lan',     'Computer Vision');
-SELECT * FROM DETAI
+
 
 use qldatn_dangky;
 INSERT IGNORE INTO DANGKY (id, ma_sv, ma_dt, ngay_dang_ky, diem_gvhd, diem_phan_bien, diem_hoi_dong, diem_tong_ket, xep_loai) VALUES

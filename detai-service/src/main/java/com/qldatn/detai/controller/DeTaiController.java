@@ -1,17 +1,17 @@
 package com.qldatn.detai.controller;
 
+import com.qldatn.detai.dto.DeTaiRequest;
 import com.qldatn.detai.entity.DeTai;
 import com.qldatn.detai.repository.DeTaiRepository;
+import com.qldatn.detai.util.JwtUtil;
+import io.jsonwebtoken.Claims;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
-/**
- * Dich vu DE TAI - CRUD bang DETAI.
- * Base URL: http://localhost:8082/api/detai
- */
 @RestController
 @RequestMapping("/api/detai")
 public class DeTaiController {
@@ -27,36 +27,62 @@ public class DeTaiController {
         return repo.findAll();
     }
 
-    @GetMapping("/{maDT}")
-    public DeTai getById(@PathVariable String maDT) {
-        return repo.findById(maDT)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Không tìm thấy đề tài " + maDT));
+    @GetMapping("/{id}")
+    public DeTai getById(@PathVariable Long id) {
+        return repo.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Không tìm thấy đề tài " + id));
     }
 
+    // POST tạo mới: Lấy Token trực tiếp từ HttpServletRequest
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public DeTai create(@RequestBody DeTai dt) {
-        if (dt.getMaDT() == null || dt.getMaDT().isBlank() || dt.getTenDT() == null || dt.getTenDT().isBlank()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Mã đề tài và tên đề tài không được để trống");
+    public DeTai create(@RequestBody DeTaiRequest req, HttpServletRequest request) {
+        String authHeader = request.getHeader("Authorization");
+        checkPermission(authHeader, "Chỉ Giảng viên hoặc Admin mới có quyền thêm đề tài!");
+
+        if (req.tenDT() == null || req.tenDT().isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Tên đề tài không được để trống");
         }
-        if (repo.existsById(dt.getMaDT())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Mã đề tài " + dt.getMaDT() + " đã tồn tại");
-        }
+
+        DeTai dt = new DeTai();
+        dt.setTenDT(req.tenDT());
+        dt.setGvhd(req.gvhd());
+        dt.setMoTa(req.moTa());
+
         return repo.save(dt);
     }
 
-    @PutMapping("/{maDT}")
-    public DeTai update(@PathVariable String maDT, @RequestBody DeTai dt) {
-        DeTai old = getById(maDT);
-        old.setTenDT(dt.getTenDT());
-        old.setGvhd(dt.getGvhd());
-        old.setMoTa(dt.getMoTa());
+    @PutMapping("/{id}")
+    public DeTai update(@PathVariable Long id, @RequestBody DeTaiRequest req, HttpServletRequest request) {
+        String authHeader = request.getHeader("Authorization");
+        checkPermission(authHeader, "Chỉ Giảng viên hoặc Admin mới có quyền sửa đề tài!");
+
+        DeTai old = getById(id);
+        if (req.tenDT() == null || req.tenDT().isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Tên đề tài không được để trống");
+        }
+        old.setTenDT(req.tenDT());
+        old.setGvhd(req.gvhd());
+        old.setMoTa(req.moTa());
+
         return repo.save(old);
     }
 
-    @DeleteMapping("/{maDT}")
+    @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable String maDT) {
-        repo.delete(getById(maDT));
+    public void delete(@PathVariable Long id, HttpServletRequest request) {
+        String authHeader = request.getHeader("Authorization");
+        checkPermission(authHeader, "Chỉ Giảng viên hoặc Admin mới có quyền xóa đề tài!");
+
+        repo.delete(getById(id));
+    }
+
+    private void checkPermission(String authHeader, String errorMessage) {
+        Claims claims = JwtUtil.parseToken(authHeader);
+        String role = claims.get("role", String.class);
+
+        if ("SINHVIEN".equals(role)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, errorMessage);
+        }
     }
 }
