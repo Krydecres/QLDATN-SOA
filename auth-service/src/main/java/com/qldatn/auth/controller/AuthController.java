@@ -72,8 +72,8 @@ public class AuthController {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Bạn chỉ được phép xem thông tin của chính mình!");
         }
 
-        TaiKhoan tk = repo.findByMaSV(maSV)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Không tìm thấy sinh viên " + maSV));
+        TaiKhoan tk = repo.findByMaSVIgnoreCase(maSV)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Không tìm thấy sinh viên " + maSV));
 
         return toResponse(tk);
     }
@@ -102,8 +102,8 @@ public class AuthController {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Từ chối truy cập: Thiếu hoặc sai Secret Key nội bộ!");
         }
 
-        TaiKhoan tk = repo.findByMaSV(maSV)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Không tìm thấy sinh viên " + maSV));
+        TaiKhoan tk = repo.findByMaSVIgnoreCase(maSV)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Không tìm thấy sinh viên " + maSV));
 
         // Trả về DTO đã ẩn password và role
         return new SinhVienResponse(

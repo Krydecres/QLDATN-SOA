@@ -7,5 +7,5 @@ import java.util.Optional;
 
 public interface TaiKhoanRepository extends JpaRepository<TaiKhoan, String> {
     List<TaiKhoan> findByRole(String role);
-    Optional<TaiKhoan> findByMaSV(String maSV);
+    Optional<TaiKhoan> findByMaSVIgnoreCase(String maSV);
 }
