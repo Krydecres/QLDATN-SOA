@@ -1,4 +1,4 @@
--- Active: 1791519077776@@127.0.0.1@3306@qldatn_auth
+-- Active: 1791519077776@@127.0.0.1@3306@qldatn_dangky
 -- Database cho sinhvien-service
 CREATE DATABASE IF NOT EXISTS qldatn_auth CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE qldatn_auth;
@@ -59,6 +59,6 @@ CREATE TABLE IF NOT EXISTS DANGKY (
 
 use qldatn_dangky;
 INSERT IGNORE INTO DANGKY (id, ma_sv, ma_dt, ngay_dang_ky, diem_gvhd, diem_phan_bien, diem_hoi_dong, diem_tong_ket, xep_loai) VALUES
-(1, 'SV001', 'DT01', '2026-09-15', 8.5, 8.0, 9.0, 8.55, 'Giỏi'),
-(2, 'SV002', 'DT02', '2026-09-16', NULL, NULL, NULL, NULL, NULL);
+(1, 'SV001', '1', '2026-09-15', 8.5, 8.0, 9.0, 8.55, 'Giỏi'),
+(2, 'SV002', '2', '2026-09-16', NULL, NULL, NULL, NULL, NULL);
 select * from DANGKY
