@@ -8,93 +8,110 @@
   :root { --main:#1565c0; --bg:#f4f6fa; --line:#dde3ec; --ok:#2e7d32; --err:#c62828; }
   * { box-sizing:border-box; }
   body { margin:0; font-family:Segoe UI, Arial, sans-serif; background:var(--bg); color:#222; }
-  header { background:var(--main); color:#fff; padding:14px 24px; display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:space-between; }
-  header h1 { margin:0; font-size:20px; }
-  .status { display:flex; gap:8px; flex-wrap:wrap; }
-  .pill { background:rgba(255,255,255,.15); padding:4px 10px; border-radius:20px; font-size:13px; }
-  .pill b { display:inline-block; width:9px; height:9px; border-radius:50%; background:#999; margin-right:6px; }
-  .pill.up b { background:#66ff88; } .pill.down b { background:#ff6b6b; }
-  nav { display:flex; gap:4px; padding:0 24px; background:#fff; border-bottom:1px solid var(--line); }
-  nav button { border:none; background:none; padding:12px 16px; cursor:pointer; font-size:15px; border-bottom:3px solid transparent; }
+  header { background:var(--main); color:#fff; padding:12px 20px; display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:space-between; }
+  header h1 { margin:0; font-size:18px; }
+  
+  .user-info { display:flex; align-items:center; gap:10px; }
+  .user-pill { background:rgba(255,255,255,.2); padding:5px 12px; border-radius:20px; font-size:13px; }
+  .btn-logout { background:#ff5252; color:#fff; border:none; padding:5px 10px; border-radius:4px; cursor:pointer; font-weight:600; font-size:12px; }
+  
+  nav { display:flex; gap:4px; padding:0 20px; background:#fff; border-bottom:1px solid var(--line); }
+  nav button { border:none; background:none; padding:10px 14px; cursor:pointer; font-size:14px; border-bottom:3px solid transparent; }
   nav button.active { border-color:var(--main); color:var(--main); font-weight:600; }
-  main { padding:20px 24px; max-width:1200px; margin:auto; }
-  .card { background:#fff; border:1px solid var(--line); border-radius:8px; padding:16px; margin-bottom:16px; }
-  .card h3 { margin:0 0 12px; font-size:16px; }
-  .api { font-family:Consolas, monospace; font-size:12px; color:#666; font-weight:normal; }
+  
+  main { padding:16px 20px; max-width:1400px; margin:auto; }
+  .card { background:#fff; border:1px solid var(--line); border-radius:8px; padding:14px; margin-bottom:14px; }
+  .card h3 { margin:0 0 10px; font-size:15px; }
+  .api { font-family:Consolas, monospace; font-size:11px; color:#666; font-weight:normal; }
+  
   form { display:flex; flex-wrap:wrap; gap:10px; align-items:flex-end; }
-  label { display:flex; flex-direction:column; font-size:13px; gap:4px; color:#555; }
-  input, select { padding:7px 9px; border:1px solid #c5ccd6; border-radius:5px; font-size:14px; min-width:150px; }
-  input.small { min-width:80px; width:90px; }
-  button.btn { padding:8px 14px; border:none; border-radius:5px; background:var(--main); color:#fff; cursor:pointer; font-size:14px; }
+  label { display:flex; flex-direction:column; font-size:12px; gap:4px; color:#555; }
+  input, select { padding:6px 8px; border:1px solid #c5ccd6; border-radius:5px; font-size:13px; min-width:140px; }
+  input.small { min-width:70px; width:80px; }
+  
+  button.btn { padding:7px 12px; border:none; border-radius:5px; background:var(--main); color:#fff; cursor:pointer; font-size:13px; }
   button.btn.gray { background:#78909c; } button.btn.red { background:var(--err); } button.btn.green { background:var(--ok); }
-  button.btn.sm { padding:4px 9px; font-size:13px; }
+  button.btn.sm { padding:3px 7px; font-size:12px; }
+  
   .table-wrap { overflow-x:auto; }
-  table { width:100%; border-collapse:collapse; font-size:14px; }
-  th, td { padding:8px 10px; border-bottom:1px solid var(--line); text-align:left; white-space:nowrap; }
-  th { background:#f0f3f8; }
-  td.actions { display:flex; gap:6px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; }
+  th, td { padding:6px 8px; border-bottom:1px solid var(--line); text-align:left; white-space:nowrap; }
+  th { background:#f0f3f8; font-size:12px; }
+  td.actions { display:flex; gap:4px; }
   .tab { display:none; } .tab.active { display:block; }
-  #toast { position:fixed; right:20px; bottom:20px; padding:12px 18px; border-radius:6px; color:#fff; display:none; max-width:420px; box-shadow:0 4px 12px rgba(0,0,0,.2); }
+  
+  /* Layout Profile */
+  .profile-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:16px; margin-top:10px; }
+  .profile-item { background:#f8faff; padding:12px; border-radius:6px; border:1px solid #e3ebd3; }
+  .profile-item span { font-size:11px; color:#666; display:block; }
+  .profile-item strong { font-size:14px; color:var(--main); }
+
+  #login-overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); display:flex; justify-content:center; align-items:center; z-index:999; }
+  .login-card { background:#fff; padding:24px; border-radius:8px; width:340px; box-shadow:0 4px 20px rgba(0,0,0,0.3); }
+  .login-card h2 { margin-top:0; font-size:18px; color:var(--main); text-align:center; }
+  .login-card form { display:flex; flex-direction:column; gap:12px; align-items:stretch; }
+  .login-hint { font-size:11px; color:#666; background:#f0f3f8; padding:8px; border-radius:4px; line-height:1.4; }
+
+  #toast { position:fixed; right:20px; bottom:20px; padding:10px 16px; border-radius:6px; color:#fff; display:none; max-width:420px; box-shadow:0 4px 12px rgba(0,0,0,.2); z-index:1000; font-size:13px; }
   .xl { font-weight:600; }
 </style>
 </head>
 <body>
 
+<div id="login-overlay">
+  <div class="login-card">
+    <h2>🔒 Đăng Nhập Hệ Thống</h2>
+    <form id="form-login">
+      <label>Tên đăng nhập / Mã SV
+        <input name="username" required placeholder="admin, gv001, SV001...">
+      </label>
+      <label>Mật khẩu
+        <input name="password" type="password" required value="123456">
+      </label>
+      <button class="btn" type="submit">Đăng nhập</button>
+    </form>
+    <div class="login-hint" style="margin-top:12px;">
+      <b>Tài khoản mẫu (Mật khẩu: 123456):</b><br>
+      • Admin: <code>admin</code><br>
+      • Giảng viên: <code>gv001</code><br>
+      • Sinh viên: <code>SV001</code>, <code>SV002</code>, <code>SV003</code>
+    </div>
+  </div>
+</div>
+
 <header>
-  <h1>🎓 Quản lý Đồ án Tốt nghiệp <small style="font-weight:normal;opacity:.8">(SOA - Spring Boot)</small></h1>
-  <div class="status">
-    <span class="pill" id="st-sv"><b></b>sinhvien-service :8081</span>
-    <span class="pill" id="st-dt"><b></b>detai-service :8082</span>
-    <span class="pill" id="st-dk"><b></b>dangky-service :8083</span>
+  <h1>🎓 Quản lý Đồ án Tốt nghiệp <small style="font-weight:normal;opacity:.8">(SOA Gateway)</small></h1>
+  <div class="user-info">
+    <span class="user-pill" id="user-display">Chưa đăng nhập</span>
+    <button class="btn-logout" id="btn-logout" onclick="logout()" style="display:none">Đăng xuất</button>
   </div>
 </header>
 
 <nav>
-  <button class="active" data-tab="tab-sv">Sinh viên</button>
-  <button data-tab="tab-dt">Đề tài</button>
+  <button class="active" data-tab="tab-dt">Đề tài</button>
   <button data-tab="tab-dk">Đăng ký &amp; Chấm điểm</button>
+  <button data-tab="tab-sv" id="nav-sv" style="display:none">Danh sách Sinh viên</button>
+  <button data-tab="tab-profile">👤 Thông tin tài khoản</button>
 </nav>
 
 <main>
-  <!-- ============ SINH VIEN ============ -->
-  <section class="tab active" id="tab-sv">
-    <div class="card">
-      <h3>Thêm / sửa sinh viên <span class="api">POST · PUT http://localhost:8080/api/sinhvien</span></h3>
-      <form id="form-sv">
-        <label>Mã SV <input name="maSV" required></label>
-        <label>Họ tên <input name="hoTen" required></label>
-        <label>Lớp <input name="lop"></label>
-        <label>Email <input name="email" type="email"></label>
-        <button class="btn" type="submit">Lưu</button>
-        <button class="btn gray" type="reset">Làm mới</button>
-      </form>
-    </div>
-    <div class="card">
-      <h3>Danh sách sinh viên <span class="api">GET http://localhost:8080/api/sinhvien</span></h3>
-      <div class="table-wrap"><table>
-        <thead><tr><th>Mã SV</th><th>Họ tên</th><th>Lớp</th><th>Email</th><th></th></tr></thead>
-        <tbody id="tb-sv"></tbody>
-      </table></div>
-    </div>
-  </section>
-
   <!-- ============ DE TAI ============ -->
-  <section class="tab" id="tab-dt">
-    <div class="card">
-      <h3>Thêm / sửa đề tài <span class="api">POST · PUT http://localhost:8080/api/detai</span></h3>
+  <section class="tab active" id="tab-dt">
+    <div class="card role-admin-gv" style="display:none">
+      <h3>Thêm / Sửa đề tài <span class="api">POST · PUT /api/detai</span></h3>
       <form id="form-dt">
-        <label>Mã đề tài <input name="maDT" required></label>
-        <label>Tên đề tài <input name="tenDT" required style="min-width:300px"></label>
+        <input type="hidden" name="id">
+        <label>Tên đề tài <input name="tenDT" required style="min-width:280px"></label>
         <label>GVHD <input name="gvhd"></label>
         <label>Mô tả <input name="moTa"></label>
-        <button class="btn" type="submit">Lưu</button>
+        <button class="btn" type="submit">Lưu đề tài</button>
         <button class="btn gray" type="reset">Làm mới</button>
       </form>
     </div>
     <div class="card">
-      <h3>Danh sách đề tài <span class="api">GET http://localhost:8080/api/detai</span></h3>
+      <h3>Danh sách đề tài <span class="api">GET /api/detai</span></h3>
       <div class="table-wrap"><table>
-        <thead><tr><th>Mã ĐT</th><th>Tên đề tài</th><th>GVHD</th><th>Mô tả</th><th></th></tr></thead>
+        <thead><tr><th>ID</th><th>Tên đề tài</th><th>GVHD</th><th>Mô tả</th><th class="role-admin-gv" style="display:none">Hành động</th></tr></thead>
         <tbody id="tb-dt"></tbody>
       </table></div>
     </div>
@@ -103,30 +120,61 @@
   <!-- ============ DANG KY ============ -->
   <section class="tab" id="tab-dk">
     <div class="card">
-      <h3>Đăng ký đề tài <span class="api">POST http://localhost:8080/api/dangky</span></h3>
+      <h3>Đăng ký đề tài <span class="api">POST /api/dangky</span></h3>
       <form id="form-dk">
-        <label>Sinh viên <select name="maSV" id="sel-sv"></select></label>
-        <label>Đề tài <select name="maDT" id="sel-dt" style="max-width:380px"></select></label>
-        <button class="btn" type="submit">Đăng ký</button>
+        <label id="lbl-dk-sv">Sinh viên
+          <span id="wrap-sv-input"></span>
+        </label>
+        <label>Chọn Đề tài <select name="maDT" id="sel-dt" style="max-width:380px"></select></label>
+        <button class="btn" type="submit">Xác nhận đăng ký</button>
       </form>
     </div>
-    <div class="card" id="card-diem" style="display:none">
-      <h3>Chấm điểm đăng ký #<span id="diem-id"></span> <span class="api">PUT http://localhost:8080/api/dangky/{id}/diem</span></h3>
+
+    <div class="card role-admin-gv" id="card-diem" style="display:none; border:1px solid #1565c0; background:#f8faff;">
+      <h3>📝 Chấm điểm đăng ký #<span id="diem-id"></span> <span class="api">PUT /api/dangky/{id}/diem</span></h3>
       <form id="form-diem">
         <label>Điểm GVHD (30%) <input class="small" name="diemGVHD" type="number" step="0.1" min="0" max="10" required></label>
         <label>Điểm phản biện (30%) <input class="small" name="diemPhanBien" type="number" step="0.1" min="0" max="10" required></label>
         <label>Điểm hội đồng (40%) <input class="small" name="diemHoiDong" type="number" step="0.1" min="0" max="10" required></label>
-        <button class="btn green" type="submit">Tính điểm</button>
-        <button class="btn gray" type="button" onclick="$('card-diem').style.display='none'">Đóng</button>
+        <button class="btn green" type="submit">Lưu điểm</button>
+        <button class="btn gray" type="button" onclick="document.getElementById('card-diem').style.display='none'">Đóng</button>
       </form>
     </div>
+
     <div class="card">
-      <h3>Danh sách đăng ký <span class="api">GET http://localhost:8080/api/dangky</span></h3>
+      <h3>Danh sách đăng ký <span class="api">GET /api/dangky</span></h3>
       <div class="table-wrap"><table>
         <thead><tr><th>#</th><th>SV</th><th>Họ tên</th><th>Đề tài</th><th>GVHD</th><th>Ngày ĐK</th>
-          <th>Đ.GVHD</th><th>Đ.PB</th><th>Đ.HĐ</th><th>Tổng kết</th><th>Xếp loại</th><th></th></tr></thead>
+          <th>Đ.GVHD</th><th>Đ.PB</th><th>Đ.HĐ</th><th>Tổng kết</th><th>Xếp loại</th><th class="role-admin-gv" style="display:none">Hành động</th></tr></thead>
         <tbody id="tb-dk"></tbody>
       </table></div>
+    </div>
+  </section>
+
+  <!-- ============ SINH VIEN (GIẢNG VIÊN / ADMIN) ============ -->
+  <section class="tab" id="tab-sv">
+    <div class="card">
+      <h3>Danh sách sinh viên hệ thống <span class="api">GET /api/auth/sinhvien</span></h3>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Mã SV</th><th>Họ tên</th><th>Lớp</th><th>Email</th></tr></thead>
+        <tbody id="tb-sv"></tbody>
+      </table></div>
+    </div>
+  </section>
+
+  <!-- ============ THÔNG TIN TÀI KHOẢN ============ -->
+  <section class="tab" id="tab-profile">
+    <div class="card">
+      <h3>👤 Thông tin cá nhân đang đăng nhập</h3>
+      <div class="profile-grid">
+        <div class="profile-item"><span>Tên tài khoản (Username)</span><strong id="p-username">-</strong></div>
+        <div class="profile-item"><span>Họ và tên</span><strong id="p-hoten">-</strong></div>
+        <div class="profile-item"><span>Vai trò (Role)</span><strong id="p-role">-</strong></div>
+        <div class="profile-item"><span>Mã Sinh viên</span><strong id="p-masv">-</strong></div>
+      </div>
+      <div style="margin-top:20px;">
+        <button class="btn red" onclick="logout()">Đăng xuất tài khoản</button>
+      </div>
     </div>
   </section>
 </main>
@@ -134,164 +182,296 @@
 <div id="toast"></div>
 
 <script>
-const API = {
-  sv: 'http://localhost:8080/api/sinhvien',
-  dt: 'http://localhost:8080/api/detai',
-  dk: 'http://localhost:8080/api/dangky'
-};
-const $ = id => document.getElementById(id);
-const esc = s => (s ?? '').toString().replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const fmt = n => n == null ? '' : n;
+const GATEWAY_URL = window.location.origin.includes(':8800') 
+  ? window.location.origin.replace(':8800', ':8080') 
+  : 'http://localhost:8080';
 
-function toast(msg, ok = true) {
+const API = {
+  login: GATEWAY_URL + '/api/auth/login',
+  sv: GATEWAY_URL + '/api/auth/sinhvien',
+  dt: GATEWAY_URL + '/api/detai',
+  dk: GATEWAY_URL + '/api/dangky'
+};
+
+function $(id) { return document.getElementById(id); }
+
+function esc(s) {
+  return (s ?? '').toString().replace(/[&<>"]/g, function(c) {
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];
+  });
+}
+
+function fmt(n) { return n == null ? '' : n; }
+
+function toast(msg, ok) {
+  if (ok === undefined) ok = true;
   const t = $('toast');
   t.textContent = msg;
   t.style.background = ok ? 'var(--ok)' : 'var(--err)';
   t.style.display = 'block';
-  clearTimeout(t._h); t._h = setTimeout(() => t.style.display = 'none', 3500);
+  clearTimeout(t._h);
+  t._h = setTimeout(function() { t.style.display = 'none'; }, 3500);
 }
 
-// Goi REST API, tra ve JSON hoac nem loi kem thong bao tu server
-async function call(url, method = 'GET', body) {
+async function call(url, method, body) {
+  if (!method) method = 'GET';
+  const token = localStorage.getItem('jwtToken');
+  const headers = { 'Content-Type': 'application/json' };
+  if (token) headers['Authorization'] = 'Bearer ' + token;
+
   let res;
   try {
-    res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: body ? JSON.stringify(body) : undefined });
+    res = await fetch(url, { method: method, headers: headers, body: body ? JSON.stringify(body) : undefined });
   } catch (e) {
-    throw new Error('Không kết nối được ' + new URL(url).host);
+    throw new Error('Không kết nối được tới Gateway server (' + GATEWAY_URL + ')');
   }
+
+  if (res.status === 401) {
+    logout();
+    throw new Error('Phiên đăng nhập hết hạn hoặc không hợp lệ. Vui lòng đăng nhập lại.');
+  }
+
   if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
+    const err = await res.json().catch(function() { return {}; });
     throw new Error(err.message || ('Lỗi HTTP ' + res.status));
   }
+
   return res.status === 204 ? null : res.json();
 }
 
-const formData = f => Object.fromEntries(new FormData(f).entries());
-
-// ---------------- Tabs + trang thai service ----------------
-document.querySelectorAll('nav button').forEach(b => b.onclick = () => {
-  document.querySelectorAll('nav button, .tab').forEach(e => e.classList.remove('active'));
-  b.classList.add('active'); $(b.dataset.tab).classList.add('active');
-  if (b.dataset.tab === 'tab-dk') loadDK();
-});
-
-async function ping() {
-  for (const [k, id] of [['sv','st-sv'],['dt','st-dt'],['dk','st-dk']]) {
-    try { await fetch(API[k]); $(id).className = 'pill up'; }
-    catch { $(id).className = 'pill down'; }
-  }
+function formData(f) {
+  return Object.fromEntries(new FormData(f).entries());
 }
 
-// ---------------- SINH VIEN ----------------
-let editSV = null;
-async function loadSV() {
-  try {
-    const list = await call(API.sv);
-    $('tb-sv').innerHTML = list.map(s => `<tr>
-      <td>${esc(s.maSV)}</td><td>${esc(s.hoTen)}</td><td>${esc(s.lop)}</td><td>${esc(s.email)}</td>
-      <td class="actions"><button class="btn sm" onclick='fillSV(${JSON.stringify(s)})'>Sửa</button>
-      <button class="btn sm red" onclick="delSV('${esc(s.maSV)}')">Xóa</button></td></tr>`).join('');
-  } catch (e) { $('tb-sv').innerHTML = `<tr><td colspan="5">${esc(e.message)}</td></tr>`; }
-}
-function fillSV(s) {
-  const f = $('form-sv'); editSV = s.maSV;
-  for (const k in s) if (f[k]) f[k].value = s[k] ?? '';
-  f.maSV.disabled = true;
-}
-$('form-sv').onreset = () => { editSV = null; $('form-sv').maSV.disabled = false; };
-$('form-sv').onsubmit = async e => {
+$('form-login').onsubmit = async function(e) {
   e.preventDefault();
   const data = formData(e.target);
   try {
-    if (editSV) { await call(`${API.sv}/${editSV}`, 'PUT', data); toast('Đã cập nhật sinh viên ' + editSV); }
-    else { await call(API.sv, 'POST', data); toast('Đã thêm sinh viên ' + data.maSV); }
-    e.target.reset(); loadSV();
-  } catch (err) { toast(err.message, false); }
+    const res = await call(API.login, 'POST', data);
+    localStorage.setItem('jwtToken', res.token);
+    localStorage.setItem('user', JSON.stringify(res));
+    toast('Đăng nhập thành công! Xin chào ' + res.hoTen);
+    initSession();
+  } catch (err) {
+    toast(err.message, false);
+  }
 };
-async function delSV(ma) {
-  if (!confirm('Xóa sinh viên ' + ma + '?')) return;
-  try { await call(`${API.sv}/${ma}`, 'DELETE'); toast('Đã xóa ' + ma); loadSV(); }
-  catch (err) { toast(err.message, false); }
+
+function logout() {
+  localStorage.removeItem('jwtToken');
+  localStorage.removeItem('user');
+  $('login-overlay').style.display = 'flex';
+  $('user-display').textContent = 'Chưa đăng nhập';
+  $('btn-logout').style.display = 'none';
 }
 
-// ---------------- DE TAI ----------------
-let editDT = null;
+async function initSession() {
+  const userStr = localStorage.getItem('user');
+  if (!userStr) {
+    $('login-overlay').style.display = 'flex';
+    return;
+  }
+  
+  const user = JSON.parse(userStr);
+  $('login-overlay').style.display = 'none';
+  $('user-display').textContent = user.hoTen + ' (' + user.role + (user.maSV ? ' - ' + user.maSV : '') + ')';
+  $('btn-logout').style.display = 'inline-block';
+
+  // Đổ thông tin vào Tab Profile
+  $('p-username').textContent = user.username || '-';
+  $('p-hoten').textContent = user.hoTen || '-';
+  $('p-role').textContent = user.role || '-';
+  $('p-masv').textContent = user.maSV || 'N/A';
+  
+  const isSV = user.role === 'SINHVIEN';
+  const isStaff = user.role === 'GIANGVIEN' || user.role === 'ADMIN';
+
+  document.querySelectorAll('.role-admin-gv').forEach(function(e) {
+    e.style.display = isStaff ? '' : 'none';
+  });
+  $('nav-sv').style.display = isStaff ? 'block' : 'none';
+  
+  await loadDT();
+
+  const wrapSV = $('wrap-sv-input');
+  if (isSV) {
+    wrapSV.innerHTML = '<input name="maSV" value="' + (user.maSV || '') + '" readonly style="background:#eef2f7">';
+  } else {
+    try {
+      const svList = await call(API.sv);
+      wrapSV.innerHTML = '<select name="maSV" id="sel-sv-dk">' + 
+        svList.map(function(s) {
+          return '<option value="' + esc(s.maSV) + '">' + esc(s.maSV) + ' - ' + esc(s.hoTen) + '</option>';
+        }).join('') + 
+      '</select>';
+    } catch(e) {
+      wrapSV.innerHTML = '<input name="maSV" placeholder="Nhập mã SV" required>';
+    }
+  }
+
+  loadDK();
+  if (isStaff) loadSV();
+}
+
+document.querySelectorAll('nav button').forEach(function(b) {
+  b.onclick = function() {
+    document.querySelectorAll('nav button, .tab').forEach(function(e) { e.classList.remove('active'); });
+    b.classList.add('active');
+    $(b.dataset.tab).classList.add('active');
+    if (b.dataset.tab === 'tab-dk') loadDK();
+  };
+});
+
+let editDTId = null;
 async function loadDT() {
   try {
     const list = await call(API.dt);
-    $('tb-dt').innerHTML = list.map(d => `<tr>
-      <td>${esc(d.maDT)}</td><td>${esc(d.tenDT)}</td><td>${esc(d.gvhd)}</td><td>${esc(d.moTa)}</td>
-      <td class="actions"><button class="btn sm" onclick='fillDT(${JSON.stringify(d).replace(/'/g, "&#39;")})'>Sửa</button>
-      <button class="btn sm red" onclick="delDT('${esc(d.maDT)}')">Xóa</button></td></tr>`).join('');
-  } catch (e) { $('tb-dt').innerHTML = `<tr><td colspan="5">${esc(e.message)}</td></tr>`; }
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    const isStaff = user.role === 'GIANGVIEN' || user.role === 'ADMIN';
+
+    $('tb-dt').innerHTML = list.map(function(d) {
+      return '<tr>' +
+        '<td>' + d.id + '</td>' +
+        '<td>' + esc(d.tenDT) + '</td>' +
+        '<td>' + esc(d.gvhd) + '</td>' +
+        '<td>' + esc(d.moTa) + '</td>' +
+        (isStaff ? '<td class="actions">' +
+          '<button class="btn sm" onclick=\'fillDT(' + JSON.stringify(d).replace(/'/g, "&#39;") + ')\'>Sửa</button>' +
+          '<button class="btn sm red" onclick="delDT(' + d.id + ')">Xóa</button>' +
+        '</td>' : '') +
+      '</tr>';
+    }).join('');
+
+    $('sel-dt').innerHTML = list.map(function(d) {
+      return '<option value="' + d.id + '">' + d.id + ' - ' + esc(d.tenDT) + '</option>';
+    }).join('');
+  } catch (e) { 
+    $('tb-dt').innerHTML = '<tr><td colspan="5">' + esc(e.message) + '</td></tr>'; 
+  }
 }
+
 function fillDT(d) {
-  const f = $('form-dt'); editDT = d.maDT;
-  for (const k in d) if (f[k]) f[k].value = d[k] ?? '';
-  f.maDT.disabled = true;
+  const f = $('form-dt');
+  editDTId = d.id;
+  f.id.value = d.id;
+  f.tenDT.value = d.tenDT ?? '';
+  f.gvhd.value = d.gvhd ?? '';
+  f.moTa.value = d.moTa ?? '';
 }
-$('form-dt').onreset = () => { editDT = null; $('form-dt').maDT.disabled = false; };
-$('form-dt').onsubmit = async e => {
+
+$('form-dt').onreset = function() { editDTId = null; };
+$('form-dt').onsubmit = async function(e) {
   e.preventDefault();
   const data = formData(e.target);
   try {
-    if (editDT) { await call(`${API.dt}/${editDT}`, 'PUT', data); toast('Đã cập nhật đề tài ' + editDT); }
-    else { await call(API.dt, 'POST', data); toast('Đã thêm đề tài ' + data.maDT); }
-    e.target.reset(); loadDT();
+    if (editDTId) { 
+      await call(API.dt + '/' + editDTId, 'PUT', data); 
+      toast('Đã cập nhật đề tài #' + editDTId); 
+    } else { 
+      await call(API.dt, 'POST', data); 
+      toast('Thêm đề tài thành công!'); 
+    }
+    e.target.reset();
+    editDTId = null;
+    loadDT();
   } catch (err) { toast(err.message, false); }
 };
-async function delDT(ma) {
-  if (!confirm('Xóa đề tài ' + ma + '?')) return;
-  try { await call(`${API.dt}/${ma}`, 'DELETE'); toast('Đã xóa ' + ma); loadDT(); }
-  catch (err) { toast(err.message, false); }
+
+async function delDT(id) {
+  if (!confirm('Xóa đề tài #' + id + '?')) return;
+  try {
+    await call(API.dt + '/' + id, 'DELETE');
+    toast('Đã xóa đề tài #' + id);
+    loadDT();
+  } catch (err) { toast(err.message, false); }
 }
 
-// ---------------- DANG KY + CHAM DIEM ----------------
 async function loadDK() {
-  // Do du lieu cho 2 combobox tu 2 service khac nhau
-  call(API.sv).then(l => $('sel-sv').innerHTML = l.map(s => `<option value="${esc(s.maSV)}">${esc(s.maSV)} - ${esc(s.hoTen)}</option>`).join('')).catch(() => {});
-  call(API.dt).then(l => $('sel-dt').innerHTML = l.map(d => `<option value="${esc(d.maDT)}">${esc(d.maDT)} - ${esc(d.tenDT)}</option>`).join('')).catch(() => {});
   try {
     const list = await call(API.dk);
-    $('tb-dk').innerHTML = list.map(d => `<tr>
-      <td>${d.id}</td><td>${esc(d.maSV)}</td><td>${esc(d.hoTen)}</td>
-      <td>${esc(d.maDT)} - ${esc(d.tenDT)}</td><td>${esc(d.gvhd)}</td><td>${esc(d.ngayDangKy)}</td>
-      <td>${fmt(d.diemGVHD)}</td><td>${fmt(d.diemPhanBien)}</td><td>${fmt(d.diemHoiDong)}</td>
-      <td class="xl">${fmt(d.diemTongKet)}</td><td class="xl">${esc(d.xepLoai)}</td>
-      <td class="actions"><button class="btn sm green" onclick='openDiem(${JSON.stringify(d).replace(/'/g, "&#39;")})'>Chấm điểm</button>
-      <button class="btn sm red" onclick="delDK(${d.id})">Hủy</button></td></tr>`).join('');
-  } catch (e) { $('tb-dk').innerHTML = `<tr><td colspan="12">${esc(e.message)}</td></tr>`; }
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    const isStaff = user.role === 'GIANGVIEN' || user.role === 'ADMIN';
+
+    $('tb-dk').innerHTML = list.map(function(d) {
+      return '<tr>' +
+        '<td>' + d.id + '</td>' +
+        '<td>' + esc(d.maSV) + '</td>' +
+        '<td>' + esc(d.hoTen) + '</td>' +
+        '<td>' + esc(d.maDT) + ' - ' + esc(d.tenDT) + '</td>' +
+        '<td>' + esc(d.gvhd) + '</td>' +
+        '<td>' + esc(d.ngayDangKy) + '</td>' +
+        '<td>' + fmt(d.diemGVHD) + '</td>' +
+        '<td>' + fmt(d.diemPhanBien) + '</td>' +
+        '<td>' + fmt(d.diemHoiDong) + '</td>' +
+        '<td class="xl">' + fmt(d.diemTongKet) + '</td>' +
+        '<td class="xl">' + esc(d.xepLoai) + '</td>' +
+        (isStaff ? '<td class="actions">' +
+          '<button class="btn sm green" onclick=\'openDiem(' + JSON.stringify(d).replace(/'/g, "&#39;") + ')\'>Chấm điểm</button>' +
+          '<button class="btn sm red" onclick="delDK(' + d.id + ')">Hủy</button>' +
+        '</td>' : '') +
+      '</tr>';
+    }).join('');
+  } catch (e) { $('tb-dk').innerHTML = '<tr><td colspan="12">' + esc(e.message) + '</td></tr>'; }
 }
-$('form-dk').onsubmit = async e => {
+
+$('form-dk').onsubmit = async function(e) {
   e.preventDefault();
-  try { await call(API.dk, 'POST', formData(e.target)); toast('Đăng ký thành công'); loadDK(); }
-  catch (err) { toast(err.message, false); }
+  try { 
+    await call(API.dk, 'POST', formData(e.target)); 
+    toast('Đăng ký đề tài thành công!'); 
+    loadDK(); 
+  } catch (err) { toast(err.message, false); }
 };
+
 let diemId = null;
 function openDiem(d) {
-  diemId = d.id; $('diem-id').textContent = d.id + ' (' + d.maSV + ' - ' + d.hoTen + ')';
+  diemId = d.id;
+  $('diem-id').textContent = d.id + ' (' + d.maSV + ' - ' + d.hoTen + ')';
   const f = $('form-diem');
-  f.diemGVHD.value = d.diemGVHD ?? ''; f.diemPhanBien.value = d.diemPhanBien ?? ''; f.diemHoiDong.value = d.diemHoiDong ?? '';
+  f.diemGVHD.value = d.diemGVHD ?? ''; 
+  f.diemPhanBien.value = d.diemPhanBien ?? ''; 
+  f.diemHoiDong.value = d.diemHoiDong ?? '';
+  
   $('card-diem').style.display = 'block';
+  $('card-diem').scrollIntoView({ behavior: 'smooth' });
 }
-$('form-diem').onsubmit = async e => {
+
+$('form-diem').onsubmit = async function(e) {
   e.preventDefault();
   const v = formData(e.target);
   const body = { diemGVHD: +v.diemGVHD, diemPhanBien: +v.diemPhanBien, diemHoiDong: +v.diemHoiDong };
   try {
-    const r = await call(`${API.dk}/${diemId}/diem`, 'PUT', body);
-    toast(`Tổng kết: ${r.diemTongKet} - ${r.xepLoai}`);
-    $('card-diem').style.display = 'none'; loadDK();
+    const r = await call(API.dk + '/' + diemId + '/diem', 'PUT', body);
+    toast('Cập nhật điểm thành công. Tổng kết: ' + r.diemTongKet + ' (' + r.xepLoai + ')');
+    $('card-diem').style.display = 'none'; 
+    loadDK();
   } catch (err) { toast(err.message, false); }
 };
+
 async function delDK(id) {
-  if (!confirm('Hủy đăng ký #' + id + '?')) return;
-  try { await call(`${API.dk}/${id}`, 'DELETE'); toast('Đã hủy đăng ký #' + id); loadDK(); }
-  catch (err) { toast(err.message, false); }
+  if (!confirm('Hủy bản đăng ký #' + id + '?')) return;
+  try {
+    await call(API.dk + '/' + id, 'DELETE');
+    toast('Đã hủy đăng ký #' + id);
+    loadDK();
+  } catch (err) { toast(err.message, false); }
 }
 
-ping(); setInterval(ping, 5000);
-loadSV(); loadDT();
+async function loadSV() {
+  try {
+    const list = await call(API.sv);
+    $('tb-sv').innerHTML = list.map(function(s) {
+      return '<tr>' +
+        '<td>' + esc(s.maSV) + '</td>' +
+        '<td>' + esc(s.hoTen) + '</td>' +
+        '<td>' + esc(s.lop) + '</td>' +
+        '<td>' + esc(s.email) + '</td>' +
+      '</tr>';
+    }).join('');
+  } catch (e) { $('tb-sv').innerHTML = '<tr><td colspan="4">' + esc(e.message) + '</td></tr>'; }
+}
+
+initSession();
 </script>
 </body>
 </html>
