@@ -120,3 +120,7 @@ http://localhost:8080/ (gateway). nhớ mở port public 8080 (update public por
 
 # thêm RabbitMQ 
 docker run -d --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3-management
+
+# thêm ratelimmit
+test thử:
+for i in {1..15}; do curl -i http://localhost:8080/api/detai; echo ""; done
