@@ -34,12 +34,7 @@ public class DeTaiController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @SecurityRequirement(name = "BearerAuth")
-    public DeTai create(
-            @RequestBody DeTaiRequest req,
-            @RequestHeader(value = "X-User-Role", required = false) String role) {
-
-        checkPermission(role, "Chỉ Giảng viên hoặc Admin mới có quyền thêm đề tài!");
-
+    public DeTai create(@RequestBody DeTaiRequest req) {
         if (req.tenDT() == null || req.tenDT().isBlank()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Tên đề tài không được để trống");
         }
@@ -54,13 +49,7 @@ public class DeTaiController {
 
     @PutMapping("/{id}")
     @SecurityRequirement(name = "BearerAuth")
-    public DeTai update(
-            @PathVariable Long id,
-            @RequestBody DeTaiRequest req,
-            @RequestHeader(value = "X-User-Role", required = false) String role) {
-
-        checkPermission(role, "Chỉ Giảng viên hoặc Admin mới có quyền sửa đề tài!");
-
+    public DeTai update(@PathVariable Long id, @RequestBody DeTaiRequest req) {
         DeTai old = getById(id);
         if (req.tenDT() == null || req.tenDT().isBlank()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Tên đề tài không được để trống");
@@ -75,18 +64,7 @@ public class DeTaiController {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @SecurityRequirement(name = "BearerAuth")
-    public void delete(
-            @PathVariable Long id,
-            @RequestHeader(value = "X-User-Role", required = false) String role) {
-
-        checkPermission(role, "Chỉ Giảng viên hoặc Admin mới có quyền xóa đề tài!");
-
+    public void delete(@PathVariable Long id) {
         repo.delete(getById(id));
-    }
-
-    private void checkPermission(String role, String errorMessage) {
-        if ("SINHVIEN".equals(role)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, errorMessage);
-        }
     }
 }

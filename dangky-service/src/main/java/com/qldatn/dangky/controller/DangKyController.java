@@ -57,15 +57,8 @@ public class DangKyController {
 
     @PutMapping("/{id}/diem")
     @SecurityRequirement(name = "BearerAuth")
-    public DangKyView chamDiem(
-            @PathVariable Long id, 
-            @RequestBody DiemRequest req,
-            @RequestHeader(value = "X-User-Role", required = false) String role) {
-
-        if (!"GIANGVIEN".equals(role) && !"ADMIN".equals(role)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Chỉ Giảng viên hoặc Admin mới có quyền chấm điểm!");
-        }
-
+    public DangKyView chamDiem(@PathVariable Long id, @RequestBody DiemRequest req) {
+        // Gateway đã chặn SINHVIEN từ ngoài, ở đây chỉ cần gọi service chấm điểm
         return service.chamDiem(id, req);
     }
 

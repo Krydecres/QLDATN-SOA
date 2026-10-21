@@ -42,13 +42,8 @@ public class AuthController {
     // GET tất cả SV: Chỉ GIANGVIEN hoặc ADMIN mới có quyền xem danh sách
     @GetMapping("/sinhvien")
     @SecurityRequirement(name = "BearerAuth")
-    public List<SinhVienResponse> getAllSinhVien(
-            @RequestHeader(value = "X-User-Role", required = false) String role) {
-
-        if ("SINHVIEN".equals(role)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Sinh viên không có quyền xem danh sách tất cả sinh viên!");
-        }
-
+    public List<SinhVienResponse> getAllSinhVien() {
+        // Gateway đã đảm bảo chỉ GIANGVIEN/ADMIN mới vào được đây
         return repo.findByRole("SINHVIEN").stream()
                 .map(this::toResponse)
                 .toList();
