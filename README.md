@@ -115,3 +115,5 @@ http://localhost:8083/swagger-ui.html (Đăng ký)
 Bất kỳ client nào (Node.js, C#, Python, Flutter) chỉ cần xem OpenAPI Spec (JSON/YAML) này là có thể gọi API chính xác mà không cần quan tâm backend viết bằng Java Spring Boot.
 
 http://localhost:8800/index.html
+
+http://localhost:8080/ (gateway). nhớ mở port public 8080 (update public ports)
