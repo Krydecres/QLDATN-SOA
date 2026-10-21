@@ -103,28 +103,32 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
      */
     private boolean isAuthorized(String path, HttpMethod method, String role) {
         boolean isStaff = "GIANGVIEN".equals(role) || "ADMIN".equals(role);
-
-        // Quy tắc 1: Xem danh sách tất cả sinh viên (/api/auth/sinhvien) chỉ cho GIANGVIEN/ADMIN
+    
+        // Xem danh sách tất cả sinh viên
         if (path.equals("/api/auth/sinhvien") && HttpMethod.GET.equals(method)) {
             return isStaff;
         }
-
-        // Quy tắc 2: Thêm, Sửa, Xóa Đề tài (/api/detai) chỉ cho GIANGVIEN/ADMIN
+    
+        // Quản lý Đề tài (Thêm/Sửa/Xóa đề tài) chỉ cho GIANGVIEN/ADMIN
         if (path.startsWith("/api/detai") && (HttpMethod.POST.equals(method) || HttpMethod.PUT.equals(method) || HttpMethod.DELETE.equals(method))) {
             return isStaff;
         }
-
-        // Quy tắc 3: Sửa đề tài đăng ký hoặc Hủy đăng ký (/api/dangky) chỉ cho GIANGVIEN/ADMIN
-        if (path.startsWith("/api/dangky") && (HttpMethod.PUT.equals(method) || HttpMethod.DELETE.equals(method)) && !path.contains("/diem")) {
-            return isStaff;
-        }
-
-        // Quy tắc 4: Chấm điểm (/api/dangky/{id}/diem) chỉ cho GIANGVIEN/ADMIN
+    
+        // Chấm điểm chỉ dành cho GIANGVIEN/ADMIN
         if (path.contains("/diem") && HttpMethod.PUT.equals(method)) {
             return isStaff;
         }
-
-        // Các trường hợp hợp lệ còn lại (ví dụ: SINHVIEN đăng ký đề tài POST /api/dangky, xem thông tin cá nhân)
+    
+        // Hủy đăng ký (DELETE /api/dangky/{id}) chỉ cho GIANGVIEN/ADMIN
+        if (path.startsWith("/api/dangky") && HttpMethod.DELETE.equals(method)) {
+            return isStaff;
+        }
+    
+        // Cho phép cả SINHVIEN thực hiện PUT /api/dangky/{id} để đổi đề tài đã đăng ký
+        if (path.startsWith("/api/dangky") && HttpMethod.PUT.equals(method)) {
+            return true; 
+        }
+    
         return true;
     }
 

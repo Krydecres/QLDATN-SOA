@@ -43,8 +43,16 @@ public class DangKyController {
 
     @PutMapping("/{id}")
     @SecurityRequirement(name = "BearerAuth")
-    public DangKyView update(@PathVariable Long id, @RequestBody DangKyRequest req) {
-        // Chức năng đổi/sửa đề tài đăng ký
+    public DangKyView update(
+            @PathVariable Long id, 
+            @RequestBody DangKyRequest req,
+            @RequestHeader(value = "X-User-Role", required = false) String role,
+            @RequestHeader(value = "X-User-MaSV", required = false) String tokenMaSV) {
+    
+        if ("SINHVIEN".equals(role) && !tokenMaSV.equalsIgnoreCase(req.maSV())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Bạn chỉ được phép sửa đề tài đăng ký của chính mình!");
+        }
+    
         return service.update(id, req);
     }
 

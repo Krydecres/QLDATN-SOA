@@ -373,21 +373,34 @@ function fillDT(d) {
 }
 
 $('form-dt').onreset = function() { editDTId = null; };
+// SỬA LẠI HÀM SUBMIT FORM ĐỀ TÀI TRONG INDEX.HTML
 $('form-dt').onsubmit = async function(e) {
   e.preventDefault();
-  const data = formData(e.target);
+  const rawData = formData(e.target);
+  
+  // Chỉ lọc đúng 3 trường mà DeTaiRequest ở Backend yêu cầu
+  const body = {
+    tenDT: rawData.tenDT,
+    gvhd: rawData.gvhd,
+    moTa: rawData.moTa
+  };
+
   try {
     if (editDTId) { 
-      await call(API.dt + '/' + editDTId, 'PUT', data); 
+      // Gọi PUT /api/detai/{id}
+      await call(API.dt + '/' + editDTId, 'PUT', body); 
       toast('Đã cập nhật đề tài #' + editDTId); 
     } else { 
-      await call(API.dt, 'POST', data); 
+      // Gọi POST /api/detai
+      await call(API.dt, 'POST', body); 
       toast('Thêm đề tài thành công!'); 
     }
     e.target.reset();
     editDTId = null;
-    loadDT();
-  } catch (err) { toast(err.message, false); }
+    loadDT(); // Load lại danh sách
+  } catch (err) { 
+    toast(err.message, false); 
+  }
 };
 
 async function delDT(id) {
@@ -452,17 +465,17 @@ $('form-dk').onsubmit = async function(e) {
   e.preventDefault();
   const data = formData(e.target);
 
-  // Ép kiểu maDT sang Number để phù hợp với LongDTO phía Backend
-  if (data.maDT) {
-    data.maDT = Number(data.maDT);
-  }
+  const body = {
+    maSV: data.maSV,
+    maDT: data.maDT ? Number(data.maDT) : null
+  };
 
   try { 
     if (editDKId) {
-      await call(API.dk + '/' + editDKId, 'PUT', data); 
+      await call(API.dk + '/' + editDKId, 'PUT', body); 
       toast('Đã đổi đề tài thành công cho bản đăng ký #' + editDKId); 
     } else {
-      await call(API.dk, 'POST', data); 
+      await call(API.dk, 'POST', body); 
       toast('Đăng ký đề tài thành công!'); 
     }
 
