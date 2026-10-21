@@ -5,10 +5,7 @@ import com.qldatn.detai.entity.DeTai;
 import com.qldatn.detai.repository.DeTaiRepository;
 import com.qldatn.detai.util.JwtUtil;
 import io.jsonwebtoken.Claims;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.servlet.http.HttpServletRequest;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -36,18 +33,11 @@ public class DeTaiController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Không tìm thấy đề tài " + id));
     }
 
-    // POST: Khai báo @Parameter để Swagger hiện ô nhập Header "Authorization"
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @SecurityRequirement(name = "BearerAuth")
     public DeTai create(
             @RequestBody DeTaiRequest req,
-            @Parameter(
-                name = "Authorization",
-                description = "Ví dụ: Bearer eyJhbGci...",
-                in = ParameterIn.HEADER,
-                required = true,
-                schema = @Schema(type = "string")
-            )
             @RequestHeader(value = "Authorization", required = false) String authHeader) {
 
         checkPermission(authHeader, "Chỉ Giảng viên hoặc Admin mới có quyền thêm đề tài!");
@@ -64,18 +54,11 @@ public class DeTaiController {
         return repo.save(dt);
     }
 
-    // PUT: Tương tự cho sửa đề tài
     @PutMapping("/{id}")
+    @SecurityRequirement(name = "BearerAuth")
     public DeTai update(
             @PathVariable Long id,
             @RequestBody DeTaiRequest req,
-            @Parameter(
-                name = "Authorization",
-                description = "Ví dụ: Bearer eyJhbGci...",
-                in = ParameterIn.HEADER,
-                required = true,
-                schema = @Schema(type = "string")
-            )
             @RequestHeader(value = "Authorization", required = false) String authHeader) {
 
         checkPermission(authHeader, "Chỉ Giảng viên hoặc Admin mới có quyền sửa đề tài!");
@@ -91,18 +74,11 @@ public class DeTaiController {
         return repo.save(old);
     }
 
-    // DELETE: Tương tự cho xóa đề tài
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @SecurityRequirement(name = "BearerAuth")
     public void delete(
             @PathVariable Long id,
-            @Parameter(
-                name = "Authorization",
-                description = "Ví dụ: Bearer eyJhbGci...",
-                in = ParameterIn.HEADER,
-                required = true,
-                schema = @Schema(type = "string")
-            )
             @RequestHeader(value = "Authorization", required = false) String authHeader) {
 
         checkPermission(authHeader, "Chỉ Giảng viên hoặc Admin mới có quyền xóa đề tài!");

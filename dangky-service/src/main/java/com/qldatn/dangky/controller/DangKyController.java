@@ -6,6 +6,7 @@ import com.qldatn.dangky.dto.DiemRequest;
 import com.qldatn.dangky.service.DangKyService;
 import com.qldatn.dangky.util.JwtUtil;
 import io.jsonwebtoken.Claims;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -22,15 +23,16 @@ public class DangKyController {
         this.service = service;
     }
 
-    // 1. Xem danh sách: Ai cũng xem được (Sinh viên, Giảng viên, Admin)
+    // 1. Xem danh sách: Ai cũng xem được
     @GetMapping
     public List<DangKyView> getAll() {
         return service.getAll();
     }
 
-    // 2. Tạo đăng ký mới: Sinh viên chỉ được đăng ký cho chính mình
+    // 2. Tạo đăng ký mới
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @SecurityRequirement(name = "BearerAuth")
     public DangKyView create(@RequestBody DangKyRequest req, 
                              @RequestHeader("Authorization") String authHeader) {
         Claims claims = JwtUtil.parseToken(authHeader);
@@ -44,8 +46,9 @@ public class DangKyController {
         return service.create(req);
     }
 
-    // 3. Đổi đề tài: Chặn Sinh viên, chỉ ADMIN/GIANGVIEN được sửa
+    // 3. Đổi đề tài
     @PutMapping("/{id}")
+    @SecurityRequirement(name = "BearerAuth")
     public DangKyView update(@PathVariable Long id, 
                              @RequestBody DangKyRequest req,
                              @RequestHeader("Authorization") String authHeader) {
@@ -59,8 +62,9 @@ public class DangKyController {
         return service.update(id, req);
     }
 
-    // 4. Chấm điểm: Chỉ GIANGVIEN hoặc ADMIN
+    // 4. Chấm điểm
     @PutMapping("/{id}/diem")
+    @SecurityRequirement(name = "BearerAuth")
     public DangKyView chamDiem(@PathVariable Long id, 
                                @RequestBody DiemRequest req,
                                @RequestHeader("Authorization") String authHeader) {
@@ -74,9 +78,10 @@ public class DangKyController {
         return service.chamDiem(id, req);
     }
 
-    // 5. Hủy/Xóa đăng ký: Chặn Sinh viên
+    // 5. Hủy/Xóa đăng ký
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @SecurityRequirement(name = "BearerAuth")
     public void delete(@PathVariable Long id, 
                        @RequestHeader("Authorization") String authHeader) {
         Claims claims = JwtUtil.parseToken(authHeader);
