@@ -59,7 +59,7 @@
   <!-- ============ SINH VIEN ============ -->
   <section class="tab active" id="tab-sv">
     <div class="card">
-      <h3>Thêm / sửa sinh viên <span class="api">POST · PUT http://localhost:8081/api/sinhvien</span></h3>
+      <h3>Thêm / sửa sinh viên <span class="api">POST · PUT http://localhost:8080/api/sinhvien</span></h3>
       <form id="form-sv">
         <label>Mã SV <input name="maSV" required></label>
         <label>Họ tên <input name="hoTen" required></label>
@@ -70,7 +70,7 @@
       </form>
     </div>
     <div class="card">
-      <h3>Danh sách sinh viên <span class="api">GET http://localhost:8081/api/sinhvien</span></h3>
+      <h3>Danh sách sinh viên <span class="api">GET http://localhost:8080/api/sinhvien</span></h3>
       <div class="table-wrap"><table>
         <thead><tr><th>Mã SV</th><th>Họ tên</th><th>Lớp</th><th>Email</th><th></th></tr></thead>
         <tbody id="tb-sv"></tbody>
@@ -81,7 +81,7 @@
   <!-- ============ DE TAI ============ -->
   <section class="tab" id="tab-dt">
     <div class="card">
-      <h3>Thêm / sửa đề tài <span class="api">POST · PUT http://localhost:8082/api/detai</span></h3>
+      <h3>Thêm / sửa đề tài <span class="api">POST · PUT http://localhost:8080/api/detai</span></h3>
       <form id="form-dt">
         <label>Mã đề tài <input name="maDT" required></label>
         <label>Tên đề tài <input name="tenDT" required style="min-width:300px"></label>
@@ -92,7 +92,7 @@
       </form>
     </div>
     <div class="card">
-      <h3>Danh sách đề tài <span class="api">GET http://localhost:8082/api/detai</span></h3>
+      <h3>Danh sách đề tài <span class="api">GET http://localhost:8080/api/detai</span></h3>
       <div class="table-wrap"><table>
         <thead><tr><th>Mã ĐT</th><th>Tên đề tài</th><th>GVHD</th><th>Mô tả</th><th></th></tr></thead>
         <tbody id="tb-dt"></tbody>
@@ -103,7 +103,7 @@
   <!-- ============ DANG KY ============ -->
   <section class="tab" id="tab-dk">
     <div class="card">
-      <h3>Đăng ký đề tài <span class="api">POST http://localhost:8083/api/dangky</span></h3>
+      <h3>Đăng ký đề tài <span class="api">POST http://localhost:8080/api/dangky</span></h3>
       <form id="form-dk">
         <label>Sinh viên <select name="maSV" id="sel-sv"></select></label>
         <label>Đề tài <select name="maDT" id="sel-dt" style="max-width:380px"></select></label>
@@ -111,7 +111,7 @@
       </form>
     </div>
     <div class="card" id="card-diem" style="display:none">
-      <h3>Chấm điểm đăng ký #<span id="diem-id"></span> <span class="api">PUT http://localhost:8083/api/dangky/{id}/diem</span></h3>
+      <h3>Chấm điểm đăng ký #<span id="diem-id"></span> <span class="api">PUT http://localhost:8080/api/dangky/{id}/diem</span></h3>
       <form id="form-diem">
         <label>Điểm GVHD (30%) <input class="small" name="diemGVHD" type="number" step="0.1" min="0" max="10" required></label>
         <label>Điểm phản biện (30%) <input class="small" name="diemPhanBien" type="number" step="0.1" min="0" max="10" required></label>
@@ -121,7 +121,7 @@
       </form>
     </div>
     <div class="card">
-      <h3>Danh sách đăng ký <span class="api">GET http://localhost:8083/api/dangky</span></h3>
+      <h3>Danh sách đăng ký <span class="api">GET http://localhost:8080/api/dangky</span></h3>
       <div class="table-wrap"><table>
         <thead><tr><th>#</th><th>SV</th><th>Họ tên</th><th>Đề tài</th><th>GVHD</th><th>Ngày ĐK</th>
           <th>Đ.GVHD</th><th>Đ.PB</th><th>Đ.HĐ</th><th>Tổng kết</th><th>Xếp loại</th><th></th></tr></thead>
@@ -135,9 +135,9 @@
 
 <script>
 const API = {
-  sv: 'http://localhost:8081/api/sinhvien',
-  dt: 'http://localhost:8082/api/detai',
-  dk: 'http://localhost:8083/api/dangky'
+  sv: 'http://localhost:8080/api/sinhvien',
+  dt: 'http://localhost:8080/api/detai',
+  dk: 'http://localhost:8080/api/dangky'
 };
 const $ = id => document.getElementById(id);
 const esc = s => (s ?? '').toString().replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));

@@ -14,7 +14,6 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/api/detai")
-@CrossOrigin(origins = "*")
 public class DeTaiController {
 
     private final DeTaiRepository repo;

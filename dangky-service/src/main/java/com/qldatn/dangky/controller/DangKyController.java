@@ -15,7 +15,6 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/api/dangky")
-@CrossOrigin(origins = "*")
 public class DangKyController {
 
     private final DangKyService service;

@@ -14,7 +14,6 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/api/sinhvien")
-@CrossOrigin(origins = "*")
 public class SinhVienController {
 
     private final SinhVienRepository repo;

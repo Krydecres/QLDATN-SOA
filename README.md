@@ -90,3 +90,28 @@ curl http://localhost:8083/api/dangky
 curl -X POST http://localhost:8083/api/dangky -H "Content-Type: application/json" -d "{\"maSV\":\"SV003\",\"maDT\":\"DT03\"}"
 curl -X PUT http://localhost:8083/api/dangky/2/diem -H "Content-Type: application/json" -d "{\"diemGVHD\":8,\"diemPhanBien\":7.5,\"diemHoiDong\":9}"
 ```
+
+
+
+2. Interoperability (Khả năng cộng tác)
+Hiện trạng trong repo:
+Repo đã đạt tốt phần này nhờ dùng chuẩn REST API (HTTP + JSON). Các dịch vụ trao đổi bằng JSON độc lập với nền tảng/ngôn ngữ.   
+Cách tối ưu thêm (Chuẩn hóa API Contract bằng OpenAPI/Swagger): Để nâng cao khả năng tích hợp với hệ thống bên thứ ba (ví dụ ứng dụng di động, hệ thống cũ...), bạn nên chuẩn hóa tài liệu API công khai bằng Springdoc OpenAPI (Swagger).
+
+Thêm dependency Swagger vào pom.xml của cả 3 service:
+
+<dependency>
+    <groupId>org.springdoc</groupId>
+    <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+    <version>2.5.0</version>
+</dependency>
+Cấu hình Swagger UI:
+Khi chạy ứng dụng, tài liệu chuẩn hóa API và schema DTO/JSON sẽ tự động tạo tại:
+
+http://localhost:8081/swagger-ui.html (Sinh viên)
+http://localhost:8082/swagger-ui.html (Đề tài)
+http://localhost:8083/swagger-ui.html (Đăng ký)
+
+Bất kỳ client nào (Node.js, C#, Python, Flutter) chỉ cần xem OpenAPI Spec (JSON/YAML) này là có thể gọi API chính xác mà không cần quan tâm backend viết bằng Java Spring Boot.
+
+http://localhost:8800/index.html
