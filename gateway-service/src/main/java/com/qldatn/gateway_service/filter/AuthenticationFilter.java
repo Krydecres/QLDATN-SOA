@@ -83,10 +83,15 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
     }
 
     private boolean isPublicEndpoint(String path, HttpMethod method) {
+        // 1. Cho phép tất cả Request OPTIONS (CORS Preflight) đi qua
+        if (HttpMethod.OPTIONS.equals(method)) {
+            return true;
+        }
+    
         if (PUBLIC_PATH_PREFIXES.stream().anyMatch(path::contains)) {
             return true;
         }
-        // Công khai việc xem danh sách (GET) đề tài và đăng ký
+        
         if (HttpMethod.GET.equals(method) && (path.startsWith("/api/detai") || path.startsWith("/api/dangky"))) {
             return true;
         }

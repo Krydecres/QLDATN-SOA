@@ -452,6 +452,7 @@ $('form-dk').onsubmit = async function(e) {
   e.preventDefault();
   const data = formData(e.target);
 
+  // Ép kiểu maDT sang Number để phù hợp với LongDTO phía Backend
   if (data.maDT) {
     data.maDT = Number(data.maDT);
   }
