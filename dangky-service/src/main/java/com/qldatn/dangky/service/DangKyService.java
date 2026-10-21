@@ -2,9 +2,12 @@ package com.qldatn.dangky.service;
 
 import com.qldatn.dangky.client.DeTaiClient;
 import com.qldatn.dangky.client.SinhVienClient;
+import com.qldatn.dangky.config.RabbitMQConfig;
 import com.qldatn.dangky.dto.*;
 import com.qldatn.dangky.entity.DangKy;
 import com.qldatn.dangky.repository.DangKyRepository;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -15,6 +18,9 @@ import java.util.List;
 @Service
 public class DangKyService {
 
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
+    
     private final DangKyRepository repo;
     private final SinhVienClient sinhVienClient;
     private final DeTaiClient deTaiClient;
@@ -39,7 +45,18 @@ public class DangKyService {
         dk.setMaSV(req.maSV());
         dk.setMaDT(req.maDT());
         dk.setNgayDangKy(LocalDate.now());
-        return toView(repo.save(dk));
+        
+        DangKy saved = repo.save(dk);
+
+        // Bắn tin nhắn xử lý bất đồng bộ sang RabbitMQ Queue
+        try {
+            rabbitTemplate.convertAndSend(RabbitMQConfig.QUEUE_NAME, 
+                "Sinh viên " + saved.getMaSV() + " đăng ký thành công đề tài " + saved.getMaDT());
+        } catch (Exception e) {
+            System.err.println("Lỗi gửi RabbitMQ Message: " + e.getMessage());
+        }
+
+        return toView(saved);
     }
 
     public DangKyView update(Long id, DangKyRequest req) {
@@ -104,7 +121,6 @@ public class DangKyService {
     }
 
     private void validate(DangKyRequest req, Long currentId) {
-        // Sửa dòng này: req.maDT() kiểu Long nên chỉ check == null
         if (req.maSV() == null || req.maSV().isBlank() || req.maDT() == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Mã SV và mã đề tài không được để trống");
         }
