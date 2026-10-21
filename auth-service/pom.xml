@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.qldatn</groupId>
-	<artifactId>sinhvien-service</artifactId>
+	<artifactId>auth-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>sinhvien-service</name>
+	<name>auth-service</name>
 	<description/>
 	<url/>
 	<licenses>

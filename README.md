@@ -108,7 +108,7 @@ Thêm dependency Swagger vào pom.xml của cả 3 service:
 Cấu hình Swagger UI:
 Khi chạy ứng dụng, tài liệu chuẩn hóa API và schema DTO/JSON sẽ tự động tạo tại:
 
-http://localhost:8081/swagger-ui.html (Sinh viên)
+http://localhost:8081/swagger-ui.html (tài khoản)
 http://localhost:8082/swagger-ui.html (Đề tài)
 http://localhost:8083/swagger-ui.html (Đăng ký)
 http://localhost:8080/swagger-ui.html (gateway)
