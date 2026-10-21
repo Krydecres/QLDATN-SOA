@@ -9,19 +9,18 @@ import org.springframework.web.client.RestClient;
 public class SinhVienClient {
 
     private final RestClient rest;
-    
-    // Secret Key phải khớp 100% với Secret Key khai báo bên auth-service
     private static final String INTERNAL_SECRET = "QLDATN_INTER_SERVICE_SECRET_KEY_2026";
 
-    public SinhVienClient(@Value("${service.sinhvien.url}") String baseUrl) {
-        this.rest = RestClient.create(baseUrl);
+    // Inject RestClient.Builder đã gắn @LoadBalanced
+    public SinhVienClient(@Value("${service.sinhvien.url}") String baseUrl, RestClient.Builder builder) {
+        this.rest = builder.baseUrl(baseUrl).build();
     }
 
     public SinhVienDTO findByMa(String maSV) {
         try {
             return rest.get()
                     .uri("/{ma}", maSV)
-                    .header("X-Internal-Secret", INTERNAL_SECRET) // Gửi kèm Secret Key nội bộ
+                    .header("X-Internal-Secret", INTERNAL_SECRET)
                     .retrieve()
                     .body(SinhVienDTO.class);
         } catch (Exception e) {

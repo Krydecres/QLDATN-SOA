@@ -15,18 +15,17 @@ public class DeTaiClient {
 
     private final RestClient rest;
 
-    public DeTaiClient(@Value("${service.detai.url}") String baseUrl) {
-        this.rest = RestClient.create(baseUrl);
+    public DeTaiClient(@Value("${service.detai.url}") String baseUrl, RestClient.Builder builder) {
+        this.rest = builder.baseUrl(baseUrl).build();
     }
 
-    /** Tra ve null neu de tai khong ton tai; nem 503 neu service khong chay. */
     public DeTaiDTO findByMa(Long maDT) {
         try {
             return rest.get().uri("/{ma}", maDT).retrieve().body(DeTaiDTO.class);
         } catch (HttpClientErrorException.NotFound e) {
             return null;
         } catch (ResourceAccessException e) {
-            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "Không kết nối được detai-service (port 8082)");
+            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "Không kết nối được detai-service");
         }
     }
 }
