@@ -9,7 +9,6 @@ import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.server.ResponseStatusException;
 
-/** Goi sinhvien-service qua HTTP/REST (GET /api/sinhvien/{maSV}). */
 @Component
 public class SinhVienClient {
 
@@ -19,14 +18,15 @@ public class SinhVienClient {
         this.rest = RestClient.create(baseUrl);
     }
 
-    /** Tra ve null neu sinh vien khong ton tai; nem 503 neu service khong chay. */
     public SinhVienDTO findByMa(String maSV) {
         try {
             return rest.get().uri("/{ma}", maSV).retrieve().body(SinhVienDTO.class);
         } catch (HttpClientErrorException.NotFound e) {
             return null;
-        } catch (ResourceAccessException e) {
-            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "Không kết nối được sinhvien-service (port 8081)");
+        } catch (Exception e) {
+            // Log lỗi ra console để dễ debug nếu không gọi được auth-service
+            System.err.println("Lỗi gọi auth-service: " + e.getMessage());
+            return null;
         }
     }
 }
