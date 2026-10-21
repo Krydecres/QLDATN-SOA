@@ -183,10 +183,22 @@
 <div id="toast"></div>
 
 <script>
-// Tự động nhận diện cổng 8800 để đổi sang 8080 trên cả Local và Cloud Workstation
-const GATEWAY_URL = window.location.origin.includes('8800')
-  ? window.location.origin.replace('8800', '8080')
-  : 'http://localhost:8080';
+// Tự động nhận diện chính xác domain trên Cloud Workstation lẫn Local
+function resolveGatewayUrl() {
+  const origin = window.location.origin;
+  // Nếu đang chạy trên Cloud Workstations (chứa chuỗi ://8800-)
+  if (origin.includes('://8800-')) {
+    return origin.replace('://8800-', '://8080-');
+  }
+  // Nếu đang chạy dưới dạng localhost:8800
+  if (origin.includes(':8800')) {
+    return origin.replace(':8800', ':8080');
+  }
+  // Mặc định cho trường hợp dev local khác
+  return 'http://localhost:8080';
+}
+
+const GATEWAY_URL = resolveGatewayUrl();
 
 const API = {
   login: GATEWAY_URL + '/api/auth/login',
@@ -440,7 +452,6 @@ $('form-dk').onsubmit = async function(e) {
   e.preventDefault();
   const data = formData(e.target);
 
-  // ÉP KIỂU maDT TỪ STRING SANG NUMBER/LONG
   if (data.maDT) {
     data.maDT = Number(data.maDT);
   }
