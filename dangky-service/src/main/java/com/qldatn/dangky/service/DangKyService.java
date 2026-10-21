@@ -44,6 +44,12 @@ public class DangKyService {
 
     public DangKyView update(Long id, DangKyRequest req) {
         DangKy dk = find(id);
+        
+        // GIỚI HẠN NGHIỆP VỤ: Đã chấm điểm thì KHÔNG ĐƯỢC ĐỔI/SỬA ĐỀ TÀI
+        if (dk.getDiemTongKet() != null || dk.getDiemGVHD() != null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Đề tài này đã được chấm điểm, không thể thay đổi thông tin đăng ký!");
+        }
+
         validate(req, id);
         dk.setMaSV(req.maSV());
         dk.setMaDT(req.maDT());
@@ -51,12 +57,16 @@ public class DangKyService {
     }
 
     public void delete(Long id) {
-        repo.delete(find(id));
+        DangKy dk = find(id);
+
+        // GIỚI HẠN NGHIỆP VỤ: Đã chấm điểm thì KHÔNG ĐƯỢC HỦY ĐĂNG KÝ
+        if (dk.getDiemTongKet() != null || dk.getDiemGVHD() != null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Đề tài này đã được chấm điểm, không thể hủy đăng ký!");
+        }
+
+        repo.delete(dk);
     }
 
-    /**
-     * TINH DIEM: Tong ket = GVHD x 30% + Phan bien x 30% + Hoi dong x 40%
-     */
     public DangKyView chamDiem(Long id, DiemRequest d) {
         DangKy dk = find(id);
         checkDiem(d.diemGVHD(), "GVHD");
@@ -82,8 +92,6 @@ public class DangKyService {
         return "Không đạt";
     }
 
-    // ----------------------------------------------------------------
-
     private DangKy find(Long id) {
         return repo.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Không tìm thấy đăng ký " + id));
@@ -95,7 +103,6 @@ public class DangKyService {
         }
     }
 
-    /** Kiem tra du lieu: goi sang 2 service khac de xac nhan SV va de tai co ton tai. */
     private void validate(DangKyRequest req, Long currentId) {
         if (req.maSV() == null || req.maSV().isBlank() || req.maDT() == null || req.maDT().isBlank()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Mã SV và mã đề tài không được để trống");
@@ -118,7 +125,6 @@ public class DangKyService {
                 });
     }
 
-    /** Ghep du lieu DANGKY voi thong tin tu sinhvien-service va detai-service. */
     private DangKyView toView(DangKy dk) {
         SinhVienDTO sv = null;
         DeTaiDTO dt = null;
@@ -139,5 +145,9 @@ public class DangKyService {
                 dk.getDiemHoiDong(),
                 dk.getDiemTongKet(),
                 dk.getXepLoai());
+    }
+
+    public boolean existsByMaDT(String maDT) {
+        return repo.existsByMaDT(maDT);
     }
 }

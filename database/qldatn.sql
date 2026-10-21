@@ -1,4 +1,4 @@
--- Active: 1791519077776@@127.0.0.1@3306@qldatn_dangky
+-- Active: 1791519077776@@127.0.0.1@3306@qldatn_detai
 -- Database cho sinhvien-service
 CREATE DATABASE IF NOT EXISTS qldatn_auth CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE qldatn_auth;
@@ -34,10 +34,11 @@ CREATE TABLE DETAI (
     mo_ta VARCHAR(500)
 );
 
-INSERT INTO DETAI (ten_dt, gvhd, mo_ta) VALUES
-('Xây dựng hệ thống quản lý thư viện theo SOA', 'TS. Nguyễn Văn Hùng', 'Spring Boot, REST API'),
+INSERT INTO DETAI (id, ten_dt, gvhd, mo_ta) VALUES
+(1,'Xây dựng hệ thống quản lý thư viện theo SOA', 'TS. Nguyễn Văn Hùng', 'Spring Boot, REST API'),
 ('Ứng dụng web bán hàng trực tuyến', 'ThS. Trần Thu Hà', 'Microservices, MySQL'),
 ('Chatbot hỗ trợ tuyển sinh', 'TS. Lê Quang Minh', 'NLP, Python');
+
 
 -- Database cho dangky-service
 CREATE DATABASE IF NOT EXISTS qldatn_dangky CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;

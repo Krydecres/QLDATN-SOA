@@ -120,13 +120,14 @@
   <!-- ============ DANG KY ============ -->
   <section class="tab" id="tab-dk">
     <div class="card">
-      <h3>Đăng ký đề tài <span class="api">POST /api/dangky</span></h3>
+      <h3>Đăng ký đề tài <span class="api">POST · PUT /api/dangky</span></h3>
       <form id="form-dk">
         <label id="lbl-dk-sv">Sinh viên
           <span id="wrap-sv-input"></span>
         </label>
         <label>Chọn Đề tài <select name="maDT" id="sel-dt" style="max-width:380px"></select></label>
         <button class="btn" type="submit">Xác nhận đăng ký</button>
+        <button class="btn gray" type="button" onclick="resetFormDK()">Làm mới</button>
       </form>
     </div>
 
@@ -277,7 +278,6 @@ async function initSession() {
   $('user-display').textContent = user.hoTen + ' (' + user.role + (user.maSV ? ' - ' + user.maSV : '') + ')';
   $('btn-logout').style.display = 'inline-block';
 
-  // Đổ thông tin vào Tab Profile
   $('p-username').textContent = user.username || '-';
   $('p-hoten').textContent = user.hoTen || '-';
   $('p-role').textContent = user.role || '-';
@@ -393,6 +393,7 @@ async function loadDK() {
     const isStaff = user.role === 'GIANGVIEN' || user.role === 'ADMIN';
 
     $('tb-dk').innerHTML = list.map(function(d) {
+      const isGraded = d.diemTongKet !== null && d.diemTongKet !== undefined;
       return '<tr>' +
         '<td>' + d.id + '</td>' +
         '<td>' + esc(d.maSV) + '</td>' +
@@ -407,20 +408,51 @@ async function loadDK() {
         '<td class="xl">' + esc(d.xepLoai) + '</td>' +
         (isStaff ? '<td class="actions">' +
           '<button class="btn sm green" onclick=\'openDiem(' + JSON.stringify(d).replace(/'/g, "&#39;") + ')\'>Chấm điểm</button>' +
-          '<button class="btn sm red" onclick="delDK(' + d.id + ')">Hủy</button>' +
+          (!isGraded ? '<button class="btn sm gray" onclick=\'editDK(' + JSON.stringify(d).replace(/'/g, "&#39;") + ')\'>Sửa ĐK</button>' : '') +
+          (!isGraded ? '<button class="btn sm red" onclick="delDK(' + d.id + ')">Hủy</button>' : '<span style="font-size:11px;color:#888;">Đã khóa</span>') +
         '</td>' : '') +
       '</tr>';
     }).join('');
   } catch (e) { $('tb-dk').innerHTML = '<tr><td colspan="12">' + esc(e.message) + '</td></tr>'; }
 }
 
+let editDKId = null;
+
+function editDK(d) {
+  editDKId = d.id;
+  if ($('sel-sv-dk')) $('sel-sv-dk').value = d.maSV;
+  if ($('sel-dt')) $('sel-dt').value = d.maDT;
+  
+  const btnSubmit = $('form-dk').querySelector('button[type="submit"]');
+  if (btnSubmit) btnSubmit.textContent = 'Cập nhật đăng ký #' + d.id;
+
+  toast('Đang chọn bản đăng ký #' + d.id + ' để đổi đề tài');
+}
+
+function resetFormDK() {
+  editDKId = null;
+  const btnSubmit = $('form-dk').querySelector('button[type="submit"]');
+  if (btnSubmit) btnSubmit.textContent = 'Xác nhận đăng ký';
+}
+
 $('form-dk').onsubmit = async function(e) {
   e.preventDefault();
+  const data = formData(e.target);
+
   try { 
-    await call(API.dk, 'POST', formData(e.target)); 
-    toast('Đăng ký đề tài thành công!'); 
+    if (editDKId) {
+      await call(API.dk + '/' + editDKId, 'PUT', data); 
+      toast('Đã đổi đề tài thành công cho bản đăng ký #' + editDKId); 
+    } else {
+      await call(API.dk, 'POST', data); 
+      toast('Đăng ký đề tài thành công!'); 
+    }
+
+    resetFormDK();
     loadDK(); 
-  } catch (err) { toast(err.message, false); }
+  } catch (err) { 
+    toast(err.message, false); 
+  }
 };
 
 let diemId = null;

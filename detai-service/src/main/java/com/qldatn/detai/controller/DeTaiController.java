@@ -1,5 +1,6 @@
 package com.qldatn.detai.controller;
 
+import com.qldatn.detai.client.DangKyClient;
 import com.qldatn.detai.dto.DeTaiRequest;
 import com.qldatn.detai.entity.DeTai;
 import com.qldatn.detai.repository.DeTaiRepository;
@@ -15,9 +16,11 @@ import java.util.List;
 public class DeTaiController {
 
     private final DeTaiRepository repo;
+    private final DangKyClient dangKyClient;
 
-    public DeTaiController(DeTaiRepository repo) {
+    public DeTaiController(DeTaiRepository repo, DangKyClient dangKyClient) {
         this.repo = repo;
+        this.dangKyClient = dangKyClient;
     }
 
     @GetMapping
@@ -65,6 +68,15 @@ public class DeTaiController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @SecurityRequirement(name = "BearerAuth")
     public void delete(@PathVariable Long id) {
-        repo.delete(getById(id));
+        DeTai dt = getById(id);
+
+        // KIỂM TRA NGHIỆP VỤ NỘI BỘ VỚI DANGKY-SERVICE:
+        // Đề tài đã có sinh viên đăng ký thì KHÔNG ĐƯỢC XÓA!
+        if (dangKyClient.isDeTaiDaDuocDangKy(dt.getId().toString())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, 
+                "Không thể xóa đề tài này vì đã có sinh viên đăng ký!");
+        }
+
+        repo.delete(dt);
     }
 }

@@ -43,36 +43,36 @@ public class DangKyController {
 
     @PutMapping("/{id}")
     @SecurityRequirement(name = "BearerAuth")
-    public DangKyView update(
-            @PathVariable Long id, 
-            @RequestBody DangKyRequest req,
-            @RequestHeader(value = "X-User-Role", required = false) String role) {
-
-        if ("SINHVIEN".equals(role)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Sinh viên không được tự ý sửa đề tài! Vui lòng liên hệ Giảng viên.");
-        }
-
+    public DangKyView update(@PathVariable Long id, @RequestBody DangKyRequest req) {
+        // Chức năng đổi/sửa đề tài đăng ký
         return service.update(id, req);
     }
 
     @PutMapping("/{id}/diem")
     @SecurityRequirement(name = "BearerAuth")
     public DangKyView chamDiem(@PathVariable Long id, @RequestBody DiemRequest req) {
-        // Gateway đã chặn SINHVIEN từ ngoài, ở đây chỉ cần gọi service chấm điểm
         return service.chamDiem(id, req);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @SecurityRequirement(name = "BearerAuth")
-    public void delete(
-            @PathVariable Long id, 
-            @RequestHeader(value = "X-User-Role", required = false) String role) {
+    public void delete(@PathVariable Long id) {
+        service.delete(id);
+    }
 
-        if ("SINHVIEN".equals(role)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Sinh viên không được tự ý hủy đăng ký!");
+
+    // Endpoint NỘI BỘ dành riêng cho detai-service gọi kiểm tra trước khi xóa đề tài
+    @GetMapping("/internal/check-detai/{maDT}")
+    public boolean checkDeTaiDaDangKy(
+            @PathVariable String maDT,
+            @RequestHeader(value = "X-Internal-Secret", required = false) String secret) {
+
+        String INTERNAL_SECRET = "QLDATN_INTER_SERVICE_SECRET_KEY_2026";
+        if (secret == null || !secret.equals(INTERNAL_SECRET)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Từ chối truy cập: Thiếu hoặc sai Secret Key nội bộ!");
         }
 
-        service.delete(id);
+        return service.existsByMaDT(maDT);
     }
 }

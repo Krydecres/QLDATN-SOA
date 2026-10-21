@@ -10,4 +10,5 @@ public interface DangKyRepository extends JpaRepository<DangKy, Long> {
     Optional<DangKy> findByMaSV(String maSV);
 
     Optional<DangKy> findByMaDT(String maDT);
+    boolean existsByMaDT(String maDT);
 }
