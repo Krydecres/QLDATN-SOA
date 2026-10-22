@@ -114,9 +114,8 @@ http://localhost:8083/swagger-ui.html (Đăng ký)
 http://localhost:8080/swagger-ui.html (gateway)
 Bất kỳ client nào (Node.js, C#, Python, Flutter) chỉ cần xem OpenAPI Spec (JSON/YAML) này là có thể gọi API chính xác mà không cần quan tâm backend viết bằng Java Spring Boot.
 
-http://localhost:8800/index.html
 
-http://localhost:8080/ (gateway). nhớ mở port public 8080 (update public ports)
+http://localhost:8080/index.html (gateway). nhớ mở port public 8080 (update public ports)
 
 # thêm RabbitMQ 
 docker run -d --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3-management
@@ -131,5 +130,7 @@ http://localhost:15672 username password là guest
 # thêm ratelimmit
 test thử:
 for i in {1..15}; do curl -i http://localhost:8080/api/detai; echo ""; done
+window:
+1..15 | ForEach-Object { curl.exe -i http://localhost:8080/api/detai; Write-Host "" }
 
 ./mvnw spring-boot:run

@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Component
 public class IpRateLimiterFilter extends AbstractGatewayFilterFactory<IpRateLimiterFilter.Config> {
 
-    // Lưu trữ thông tin request theo IP: Map<IP, ClientWindow>
+    // Lưu trữ thông tin request theo IP: Map<IP, ClientWindow>. và lưu ở ram
     private final ConcurrentHashMap<String, RequestWindow> ipRequests = new ConcurrentHashMap<>();
 
     // Giới hạn: Tối đa 10 request trong vòng 1 giây cho mỗi IP
